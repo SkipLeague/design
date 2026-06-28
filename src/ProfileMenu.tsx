@@ -178,26 +178,32 @@ export function ProfileMenu({
                 {user?.email && <div style={{ fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }}>{user.email}</div>}
               </div>
 
-              <div style={switchHeading}>Switch app</div>
-              {apps.map((a) => {
-                const isCurrent = a.slug === currentSlug;
-                const inner = (
-                  <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <AppBadge name={a.name} />
-                    {a.name}
-                  </span>
-                );
-                // The app you're in: light-green highlight, not clickable.
-                return isCurrent ? (
-                  <div key={a.slug} aria-current="page" style={{ ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }}>
-                    {inner}
-                  </div>
-                ) : (
-                  <a key={a.slug} href={a.url} role="menuitem" style={itemStyle}>
-                    {inner}
-                  </a>
-                );
-              })}
+              {/* Switcher only when there are apps to switch to — pass apps={[]} to
+                  hide it entirely (e.g. dev mode, or a single-app deployment). */}
+              {apps.length > 0 && (
+                <>
+                  <div style={switchHeading}>Switch app</div>
+                  {apps.map((a) => {
+                    const isCurrent = a.slug === currentSlug;
+                    const inner = (
+                      <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <AppBadge name={a.name} />
+                        {a.name}
+                      </span>
+                    );
+                    // The app you're in: light-green highlight, not clickable.
+                    return isCurrent ? (
+                      <div key={a.slug} aria-current="page" style={{ ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }}>
+                        {inner}
+                      </div>
+                    ) : (
+                      <a key={a.slug} href={a.url} role="menuitem" style={itemStyle}>
+                        {inner}
+                      </a>
+                    );
+                  })}
+                </>
+              )}
 
               <div style={divider} />
               {accountItem}
