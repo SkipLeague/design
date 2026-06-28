@@ -2,21 +2,22 @@
 
 The shared SkipLeague design system (roadmap #17 / #60) — tokens + React components
 so every SkipLeague app uses one set of primitives instead of per-app copies.
-Published to **GitHub Packages** as `@skipleague/design`.
 
 ## Installing in an app
 
-GitHub Packages hosts the `@skipleague` scope, so each consuming repo needs an
-`.npmrc` pointing that scope at the GH registry:
+This is a **public repo installed directly from git** — no registry, no auth token.
+Add it to the app's `package.json` pinned to a version tag:
 
-```ini
-# .npmrc (in the app repo root)
-@skipleague:registry=https://npm.pkg.github.com
+```jsonc
+// package.json
+"dependencies": {
+  "@skipleague/design": "github:SkipLeague/design#v0.3.1"
+}
 ```
 
-Then add the dependency and import. Installing a **private** package requires a
-`read:packages` token (set `NODE_AUTH_TOKEN`/`NPM_TOKEN` in CI); if the package is
-made **public**, no token is needed to install.
+`npm install` clones the repo at that tag and runs its `prepare` script (builds
+`dist/`), so the package is ready to import — in local dev and in CI, with no
+`.npmrc` and no token. To pull a newer version later, bump the `#vX.Y.Z` tag.
 
 ```ts
 import "@skipleague/design/tokens.css";
@@ -60,18 +61,17 @@ npm install
 npm run build   # tsc → dist/
 ```
 
-## Publishing
+## Releasing a new version
 
-`tsc` builds to `dist/`, and `.github/workflows/publish.yml` publishes to GitHub
-Packages on a version tag or a manual run:
+There's no registry to publish to — consumers install from git by tag. To cut a
+release, bump the version and push the tag, then point apps at the new tag:
 
 ```bash
 npm version patch        # bump version + create the vX.Y.Z tag
-git push --follow-tags   # the tag triggers the publish workflow
+git push --follow-tags   # publish the tag for consumers to pin
 ```
 
-The publish workflow uses the built-in `GITHUB_TOKEN` (no extra secret needed to
-publish a package owned by this org).
+`prepare` builds `dist/` automatically on every install, so `dist/` is not committed.
 
 ## Roadmap
 
