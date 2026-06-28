@@ -1,0 +1,43 @@
+/**
+ * SkipUI design tokens — the SkipLeague visual language, extracted from the
+ * surfaces we like (home, account, SkipRacquetball). Import once at the app root:
+ *   import "@skipleague/design/tokens.css";
+ * Components reference these variables, so the look is driven from here.
+ */
+:root {
+  /* Typography */
+  --skl-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --skl-text-sm: 0.875rem;
+  --skl-text-xs: 0.75rem;
+  --skl-text-2xs: 0.7rem;
+
+  /* Brand */
+  --skl-color-brand: #0f766e;        /* teal — primary actions, badges */
+  --skl-color-brand-bright: #5eead4; /* mint — on dark headers */
+
+  /* Dark header surface (the shared TopBar) + its on-dark foregrounds */
+  --skl-color-header-dark: #0e2e2a;
+  --skl-color-on-dark: #eafaf6;         /* primary text on the dark header */
+  --skl-color-on-dark-muted: #9fe7d6;   /* muted icons on the dark header */
+
+  /* Neutrals (slate) */
+  --skl-color-text: #0f172a;
+  --skl-color-text-muted: #64748b;
+  --skl-color-text-faint: #94a3b8;
+  --skl-color-border: #e2e8f0;
+  --skl-color-surface: #ffffff;
+  --skl-color-surface-muted: #f8fafc; /* disabled inputs, subtle fills */
+
+  /* "Current" highlight (selected app / current page) */
+  --skl-color-current-bg: #dcfce7;
+  --skl-color-current-text: #166534;
+
+  /* Radii */
+  --skl-radius-panel: 10px;
+  --skl-radius-control: 9px;
+  --skl-radius-md: 6px; /* buttons, inputs, selects */
+  --skl-radius-badge: 5px;
+
+  /* Elevation */
+  --skl-shadow-menu: 0 12px 32px rgba(2, 6, 23, 0.18);
+}

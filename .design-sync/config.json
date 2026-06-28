@@ -1,0 +1,13 @@
+{
+  "pkg": "@skipleague/design",
+  "globalName": "SkipUI",
+  "shape": "package",
+  "projectId": "d50ced8f-5451-4173-b297-2a862d640a31",
+  "buildCmd": "npm run build",
+  "cssEntry": "src/tokens.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "ProfileMenu": { "cardMode": "column", "primaryStory": "OpenMenu" },
+    "Card": { "cardMode": "column" }
+  }
+}
