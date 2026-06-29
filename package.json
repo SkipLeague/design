@@ -1,6 +1,6 @@
 {
   "name": "@skipleague/design",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "SkipUI — the SkipLeague design system: shared tokens and React components for every SkipLeague app.",
   "type": "module",
   "repository": {
@@ -19,8 +19,7 @@
   },
   "files": ["dist", "src"],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "prepare": "npm run build"
+    "build": "tsc -p tsconfig.json"
   },
   "license": "UNLICENSED",
   "peerDependencies": {

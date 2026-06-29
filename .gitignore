@@ -1,5 +1,6 @@
 node_modules/
-dist/
+# dist/ is committed: consumers git-install this package and must get prebuilt
+# output without running a build (build-on-install OOMs small deploy boxes).
 .ds-sync/
 ds-bundle/
 .design-sync/.cache/
