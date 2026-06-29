@@ -4,6 +4,8 @@ export { AppBadge } from "./AppBadge.js";
 export { AppLogo } from "./AppLogo.js";
 export type { AppGlyph } from "./AppLogo.js";
 export { TopBar, TopBarIconButton } from "./TopBar.js";
+export { BottomNav } from "./BottomNav.js";
+export type { BottomNavProps, BottomNavTab, BottomNavAction } from "./BottomNav.js";
 export { ShareMenu } from "./ShareMenu.js";
 export { Button } from "./Button.js";
 export type { ButtonProps } from "./Button.js";
