@@ -52,7 +52,8 @@ const groupLabel = {
     color: "var(--skl-color-text-faint)",
     textAlign: "center",
 };
-function Tab({ label, icon, active, onClick, lift }) {
+function Tab({ label, icon, active, color, onClick, lift }) {
+    const accent = color ?? "var(--skl-color-brand)";
     return (_jsxs("button", { type: "button", onClick: onClick, style: {
             ...cell,
             background: "none",
@@ -61,11 +62,11 @@ function Tab({ label, icon, active, onClick, lift }) {
             cursor: "pointer",
             transform: `translateY(${lift}px)`,
             // icon color (currentColor); the label sets its own color below
-            color: active ? "var(--skl-color-brand)" : "var(--skl-color-text-faint)",
+            color: active ? accent : "var(--skl-color-text-faint)",
         }, children: [_jsx("span", { style: { height: ICON, display: "flex", alignItems: "flex-end" }, children: icon }), _jsx("span", { style: {
                     ...labelBase,
                     fontWeight: active ? 700 : 600,
-                    color: active ? "var(--skl-color-brand)" : "var(--skl-color-text-muted)",
+                    color: active ? accent : "var(--skl-color-text-muted)",
                 }, children: label })] }));
 }
 export function BottomNav({ tabs, action, groups }) {
@@ -89,6 +90,13 @@ export function BottomNav({ tabs, action, groups }) {
     // Horizontal center of the action column (== 50% for even counts).
     const actionLeft = `${((leftCount + 0.5) / columns) * 100}%`;
     const gridCols = `repeat(${columns}, 1fr)`;
+    // "Tab Colors": the center button + label + glow follow the active tab's color
+    // when one is set; otherwise everything stays the default brand teal + mint glow.
+    const activeTab = tabs.find((t) => t.active);
+    const accent = activeTab?.color ?? "var(--skl-color-brand)";
+    const glow = activeTab?.color
+        ? `0 0 22px 4px color-mix(in srgb, ${activeTab.color} 55%, transparent), 0 10px 22px color-mix(in srgb, ${activeTab.color} 30%, transparent)`
+        : ACTION_GLOW;
     return (_jsxs("nav", { style: { position: "relative", flex: "none" }, children: [_jsxs("div", { style: {
                     background: "var(--skl-color-surface)",
                     borderTop: "1px solid var(--skl-color-border)",
@@ -104,7 +112,7 @@ export function BottomNav({ tabs, action, groups }) {
                             width: ACTION_SIZE,
                             height: ACTION_SIZE,
                             borderRadius: ACTION_RADIUS,
-                            boxShadow: ACTION_GLOW,
+                            boxShadow: glow,
                             pointerEvents: "none",
                         } }), grouped && (_jsxs("div", { style: { display: "grid", gridTemplateColumns: gridCols, paddingTop: sp.padTop }, children: [_jsx("div", { style: { ...groupLabel, gridColumn: `1 / ${leftCount + 1}` }, children: groups[0] }), _jsx("div", { style: { ...groupLabel, gridColumn: `${leftCount + 2} / ${columns + 1}` }, children: groups[1] })] })), _jsxs("div", { style: {
                             display: "grid",
@@ -115,7 +123,7 @@ export function BottomNav({ tabs, action, groups }) {
                         }, children: [left.map((t, i) => (_jsx(Tab, { ...t, lift: tabLift }, `l${i}`))), _jsxs("div", { style: cell, children: [_jsx("div", { style: { height: ICON } }), _jsx("span", { style: {
                                             ...labelBase,
                                             fontWeight: 700,
-                                            color: "var(--skl-color-brand)",
+                                            color: accent,
                                             transform: `translateY(${centerLabelLift}px)`,
                                         }, children: action.label })] }), right.map((t, i) => (_jsx(Tab, { ...t, lift: tabLift }, `r${i}`)))] })] }), _jsx("button", { type: "button", onClick: action.onClick, "aria-label": action.label, style: {
                     position: "absolute",
@@ -125,7 +133,7 @@ export function BottomNav({ tabs, action, groups }) {
                     width: ACTION_SIZE,
                     height: ACTION_SIZE,
                     borderRadius: ACTION_RADIUS,
-                    background: "var(--skl-color-brand)",
+                    background: accent,
                     color: "#fff",
                     border: "none",
                     display: "flex",

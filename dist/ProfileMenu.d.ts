@@ -21,6 +21,13 @@ export interface ProfileMenuProps {
     currentSlug?: string;
     /** Apps to list in the switcher. Defaults to the live SkipLeague apps. */
     apps?: AppLink[];
+    /**
+     * Slugs of the apps THIS user has enabled (e.g. the platform's `app_slugs`).
+     * When provided, the switcher shows only those apps (the current app is always
+     * kept), so every app shows the same "your apps" set without each one
+     * re-implementing the filter. Omit to list every app in `apps`.
+     */
+    enabledSlugs?: string[];
     /** Target of the "Manage account" link. Defaults to the platform account page. */
     accountUrl?: string;
     /** Called when the user clicks "Sign out". */
@@ -62,4 +69,4 @@ export interface ProfileMenuProps {
  *
  * Requires `@skipleague/design/tokens.css` to be imported once at the app root.
  */
-export declare function ProfileMenu({ user, currentSlug, apps, accountUrl, onSignOut, tone, renderLink, accountIsCurrent, onSignIn, signInLabel, }: ProfileMenuProps): import("react").JSX.Element;
+export declare function ProfileMenu({ user, currentSlug, apps, enabledSlugs, accountUrl, onSignOut, tone, renderLink, accountIsCurrent, onSignIn, signInLabel, }: ProfileMenuProps): import("react").JSX.Element;

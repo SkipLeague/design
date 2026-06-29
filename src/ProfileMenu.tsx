@@ -26,6 +26,13 @@ export interface ProfileMenuProps {
   currentSlug?: string;
   /** Apps to list in the switcher. Defaults to the live SkipLeague apps. */
   apps?: AppLink[];
+  /**
+   * Slugs of the apps THIS user has enabled (e.g. the platform's `app_slugs`).
+   * When provided, the switcher shows only those apps (the current app is always
+   * kept), so every app shows the same "your apps" set without each one
+   * re-implementing the filter. Omit to list every app in `apps`.
+   */
+  enabledSlugs?: string[];
   /** Target of the "Manage account" link. Defaults to the platform account page. */
   accountUrl?: string;
   /** Called when the user clicks "Sign out". */
@@ -72,6 +79,7 @@ export function ProfileMenu({
   user,
   currentSlug,
   apps = SKIPLEAGUE_APPS,
+  enabledSlugs,
   accountUrl = SKIPLEAGUE_ACCOUNT_URL,
   onSignOut,
   tone = "dark",
@@ -99,6 +107,12 @@ export function ProfileMenu({
       document.removeEventListener("keydown", onKey);
     };
   }, [open]);
+
+  // Show only the apps this user has enabled (always keeping the current app),
+  // when the caller passes the user's enabled slugs. Otherwise list every app.
+  const visibleApps = enabledSlugs
+    ? apps.filter((a) => a.slug === currentSlug || enabledSlugs.includes(a.slug))
+    : apps;
 
   const signedIn = !!(user?.displayName || user?.email);
   // Signed-out menu only when a sign-in handler is supplied — otherwise keep the
@@ -180,10 +194,10 @@ export function ProfileMenu({
 
               {/* Switcher only when there are apps to switch to — pass apps={[]} to
                   hide it entirely (e.g. dev mode, or a single-app deployment). */}
-              {apps.length > 0 && (
+              {visibleApps.length > 0 && (
                 <>
                   <div style={switchHeading}>Switch app</div>
-                  {apps.map((a) => {
+                  {visibleApps.map((a) => {
                     const isCurrent = a.slug === currentSlug;
                     const inner = (
                       <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
