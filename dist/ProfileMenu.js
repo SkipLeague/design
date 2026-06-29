@@ -13,7 +13,7 @@ import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS } from "./apps.js";
  *
  * Requires `@skipleague/design/tokens.css` to be imported once at the app root.
  */
-export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, accountUrl = SKIPLEAGUE_ACCOUNT_URL, onSignOut, tone = "dark", renderLink, accountIsCurrent = false, onSignIn, signInLabel = "Sign in", }) {
+export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabledSlugs, accountUrl = SKIPLEAGUE_ACCOUNT_URL, onSignOut, tone = "dark", renderLink, accountIsCurrent = false, onSignIn, signInLabel = "Sign in", }) {
     const [open, setOpen] = useState(false);
     const [hover, setHover] = useState(false);
     const ref = useRef(null);
@@ -35,6 +35,11 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, account
             document.removeEventListener("keydown", onKey);
         };
     }, [open]);
+    // Show only the apps this user has enabled (always keeping the current app),
+    // when the caller passes the user's enabled slugs. Otherwise list every app.
+    const visibleApps = enabledSlugs
+        ? apps.filter((a) => a.slug === currentSlug || enabledSlugs.includes(a.slug))
+        : apps;
     const signedIn = !!(user?.displayName || user?.email);
     // Signed-out menu only when a sign-in handler is supplied — otherwise keep the
     // existing always-signed-in behavior product apps depend on.
@@ -59,7 +64,7 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, account
                     background: boxBg,
                     color: active ? brand : idleIcon,
                     transition: "border-color 0.15s, color 0.15s",
-                }, children: _jsx(CircleUser, { size: 22 }) }), open && (_jsx("div", { role: "menu", style: menuStyle, children: showSignedOut ? (_jsxs(_Fragment, { children: [_jsx("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: _jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: "Not signed in" }) }), _jsxs("button", { role: "menuitem", onClick: onSignIn, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogIn, { size: 15 }), " ", signInLabel] })] })) : (_jsxs(_Fragment, { children: [_jsxs("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: [_jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: label }), user?.email && _jsx("div", { style: { fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }, children: user.email })] }), apps.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { style: switchHeading, children: "Switch app" }), apps.map((a) => {
+                }, children: _jsx(CircleUser, { size: 22 }) }), open && (_jsx("div", { role: "menu", style: menuStyle, children: showSignedOut ? (_jsxs(_Fragment, { children: [_jsx("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: _jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: "Not signed in" }) }), _jsxs("button", { role: "menuitem", onClick: onSignIn, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogIn, { size: 15 }), " ", signInLabel] })] })) : (_jsxs(_Fragment, { children: [_jsxs("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: [_jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: label }), user?.email && _jsx("div", { style: { fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }, children: user.email })] }), visibleApps.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { style: switchHeading, children: "Switch app" }), visibleApps.map((a) => {
                                     const isCurrent = a.slug === currentSlug;
                                     const inner = (_jsxs("span", { style: { display: "flex", alignItems: "center", gap: "0.5rem" }, children: [_jsx(AppBadge, { name: a.name }), a.name] }));
                                     // The app you're in: light-green highlight, not clickable.

@@ -41,8 +41,16 @@ export interface BottomNavTab {
   label: string;
   /** 24px line icon (stroke 2, currentColor) — inherits the cell's color. */
   icon: ReactNode;
-  /** Current tab (brand color, bold). Derive from your router. */
+  /** Current tab (accent color, bold). Derive from your router. */
   active?: boolean;
+  /**
+   * "Tab Colors" option — a per-tab accent (any CSS color). When set and this
+   * tab is active, its icon/label AND the center button + glow use this color
+   * instead of the default brand. Omit on every tab to keep the standard
+   * single-color bar (the default). Provide a color per tab for an app whose
+   * tabs each have their own identity (e.g. SkipGifts).
+   */
+  color?: string;
   onClick?: () => void;
 }
 
@@ -85,7 +93,8 @@ const groupLabel: CSSProperties = {
   textAlign: "center",
 };
 
-function Tab({ label, icon, active, onClick, lift }: BottomNavTab & { lift: number }) {
+function Tab({ label, icon, active, color, onClick, lift }: BottomNavTab & { lift: number }) {
+  const accent = color ?? "var(--skl-color-brand)";
   return (
     <button
       type="button"
@@ -98,7 +107,7 @@ function Tab({ label, icon, active, onClick, lift }: BottomNavTab & { lift: numb
         cursor: "pointer",
         transform: `translateY(${lift}px)`,
         // icon color (currentColor); the label sets its own color below
-        color: active ? "var(--skl-color-brand)" : "var(--skl-color-text-faint)",
+        color: active ? accent : "var(--skl-color-text-faint)",
       }}
     >
       <span style={{ height: ICON, display: "flex", alignItems: "flex-end" }}>{icon}</span>
@@ -106,7 +115,7 @@ function Tab({ label, icon, active, onClick, lift }: BottomNavTab & { lift: numb
         style={{
           ...labelBase,
           fontWeight: active ? 700 : 600,
-          color: active ? "var(--skl-color-brand)" : "var(--skl-color-text-muted)",
+          color: active ? accent : "var(--skl-color-text-muted)",
         }}
       >
         {label}
@@ -141,6 +150,14 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
   const actionLeft = `${((leftCount + 0.5) / columns) * 100}%`;
   const gridCols = `repeat(${columns}, 1fr)`;
 
+  // "Tab Colors": the center button + label + glow follow the active tab's color
+  // when one is set; otherwise everything stays the default brand teal + mint glow.
+  const activeTab = tabs.find((t) => t.active);
+  const accent = activeTab?.color ?? "var(--skl-color-brand)";
+  const glow = activeTab?.color
+    ? `0 0 22px 4px color-mix(in srgb, ${activeTab.color} 55%, transparent), 0 10px 22px color-mix(in srgb, ${activeTab.color} 30%, transparent)`
+    : ACTION_GLOW;
+
   return (
     <nav style={{ position: "relative", flex: "none" }}>
       {/* Bar — clips the glow at its top edge ("the line"). */}
@@ -165,7 +182,7 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
             width: ACTION_SIZE,
             height: ACTION_SIZE,
             borderRadius: ACTION_RADIUS,
-            boxShadow: ACTION_GLOW,
+            boxShadow: glow,
             pointerEvents: "none",
           }}
         />
@@ -194,20 +211,26 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
             <Tab key={`l${i}`} {...t} lift={tabLift} />
           ))}
 
-          {/* Center column: the action's label (the button floats above it). */}
-          <div style={cell}>
+          {/* Center column: the action's label. It's a button (not inert text)
+              so tapping the label triggers the action too — the floating "+"
+              only covers the area above the label. */}
+          <button
+            type="button"
+            onClick={action.onClick}
+            style={{ ...cell, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+          >
             <div style={{ height: ICON }} />
             <span
               style={{
                 ...labelBase,
                 fontWeight: 700,
-                color: "var(--skl-color-brand)",
+                color: accent,
                 transform: `translateY(${centerLabelLift}px)`,
               }}
             >
               {action.label}
             </span>
-          </div>
+          </button>
 
           {right.map((t, i) => (
             <Tab key={`r${i}`} {...t} lift={tabLift} />
@@ -228,7 +251,7 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
           width: ACTION_SIZE,
           height: ACTION_SIZE,
           borderRadius: ACTION_RADIUS,
-          background: "var(--skl-color-brand)",
+          background: accent,
           color: "#fff",
           border: "none",
           display: "flex",

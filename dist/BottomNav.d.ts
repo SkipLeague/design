@@ -3,8 +3,16 @@ export interface BottomNavTab {
     label: string;
     /** 24px line icon (stroke 2, currentColor) — inherits the cell's color. */
     icon: ReactNode;
-    /** Current tab (brand color, bold). Derive from your router. */
+    /** Current tab (accent color, bold). Derive from your router. */
     active?: boolean;
+    /**
+     * "Tab Colors" option — a per-tab accent (any CSS color). When set and this
+     * tab is active, its icon/label AND the center button + glow use this color
+     * instead of the default brand. Omit on every tab to keep the standard
+     * single-color bar (the default). Provide a color per tab for an app whose
+     * tabs each have their own identity (e.g. SkipGifts).
+     */
+    color?: string;
     onClick?: () => void;
 }
 export interface BottomNavAction {
