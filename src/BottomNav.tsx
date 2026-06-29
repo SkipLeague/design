@@ -211,8 +211,14 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
             <Tab key={`l${i}`} {...t} lift={tabLift} />
           ))}
 
-          {/* Center column: the action's label (the button floats above it). */}
-          <div style={cell}>
+          {/* Center column: the action's label. It's a button (not inert text)
+              so tapping the label triggers the action too — the floating "+"
+              only covers the area above the label. */}
+          <button
+            type="button"
+            onClick={action.onClick}
+            style={{ ...cell, background: "none", border: "none", padding: 0, cursor: "pointer" }}
+          >
             <div style={{ height: ICON }} />
             <span
               style={{
@@ -224,7 +230,7 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
             >
               {action.label}
             </span>
-          </div>
+          </button>
 
           {right.map((t, i) => (
             <Tab key={`r${i}`} {...t} lift={tabLift} />
