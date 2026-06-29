@@ -1,0 +1,245 @@
+import type { CSSProperties, ReactNode } from "react";
+
+/**
+ * The shared SkipLeague bottom navigation (design_handoff_bottom_nav).
+ *
+ * ONE layout for every app: a row of tabs split evenly around a floating
+ * center action ("+"). Only the tab labels/icons and the action's label change
+ * per app — spacing, sizing, the button, and its clipped glow are identical
+ * everywhere, so the bar looks the same across the family.
+ *
+ *   [tab][tab] ... ( + ) ... [tab][tab]
+ *                  label
+ *
+ * - `tabs` holds 2–8 tabs. They split around the center: the first
+ *   `ceil(n/2)` render left of the "+", the rest render right. (For an odd
+ *   count the extra tab sits on the left; the "+" tracks the true center of
+ *   its column, so it drifts slightly right of screen-center — even counts are
+ *   the designed-for case.)
+ * - `action` is the floating center button and the word beneath it.
+ * - `groups` (optional, even counts only) adds a header band labelling the left
+ *   pair/triple vs the right. Total bar height is unchanged — the tabs shift
+ *   down to make room.
+ */
+
+const ICON = 24; // tab icon box (24px line icons, stroke 2)
+const LABEL_GAP = 10; // icon -> label vertical gap
+const ACTION_SIZE = 53; // floating center button (square)
+const ACTION_RADIUS = 17; // center button corner radius
+const ACTION_OVERHANG = 10; // px the button rises above the bar's top edge
+const PLUS = 26; // "+" glyph box inside the button
+
+// Soft mint halo + a grounding shadow. Painted on a layer INSIDE the
+// overflow:hidden bar so it is clipped at the top edge — no glow above the line.
+const ACTION_GLOW = "0 0 22px 4px rgba(94,234,212,0.6), 0 10px 22px rgba(15,118,110,0.30)";
+
+// Two vertical-spacing presets that yield the SAME total bar height.
+const PLAIN = { padTop: 10, padBottom: 18, headerGap: 0 };
+const GROUPED = { padTop: 5, padBottom: 6, headerGap: 5 };
+
+export interface BottomNavTab {
+  label: string;
+  /** 24px line icon (stroke 2, currentColor) — inherits the cell's color. */
+  icon: ReactNode;
+  /** Current tab (brand color, bold). Derive from your router. */
+  active?: boolean;
+  onClick?: () => void;
+}
+
+export interface BottomNavAction {
+  label: string;
+  /** The "+" glyph (white, ~26px, stroke 2.4). Inherits white from the button. */
+  icon: ReactNode;
+  onClick?: () => void;
+}
+
+export interface BottomNavProps {
+  /** 2–8 tabs, split evenly around the center action. */
+  tabs: BottomNavTab[];
+  /** The floating center "+" button and its label. */
+  action: BottomNavAction;
+  /** Optional grouped-header band; even tab counts only. */
+  groups?: [string, string];
+}
+
+const cell: CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: LABEL_GAP,
+};
+
+const labelBase: CSSProperties = {
+  fontFamily: "var(--skl-font-sans)",
+  fontSize: 13,
+  lineHeight: 1.15,
+};
+
+const groupLabel: CSSProperties = {
+  ...labelBase,
+  fontSize: 11,
+  fontWeight: 700,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: "var(--skl-color-text-faint)",
+  textAlign: "center",
+};
+
+function Tab({ label, icon, active, onClick, lift }: BottomNavTab & { lift: number }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        ...cell,
+        background: "none",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
+        transform: `translateY(${lift}px)`,
+        // icon color (currentColor); the label sets its own color below
+        color: active ? "var(--skl-color-brand)" : "var(--skl-color-text-faint)",
+      }}
+    >
+      <span style={{ height: ICON, display: "flex", alignItems: "flex-end" }}>{icon}</span>
+      <span
+        style={{
+          ...labelBase,
+          fontWeight: active ? 700 : 600,
+          color: active ? "var(--skl-color-brand)" : "var(--skl-color-text-muted)",
+        }}
+      >
+        {label}
+      </span>
+    </button>
+  );
+}
+
+export function BottomNav({ tabs, action, groups }: BottomNavProps) {
+  const n = tabs.length;
+  if (n < 2 || n > 8) {
+    // Render what we were given, but flag the contract violation in dev.
+    console.warn(`BottomNav expects 2–8 tabs, received ${n}.`);
+  }
+
+  // Split around the center: extra tab (odd n) goes left.
+  const leftCount = Math.ceil(n / 2);
+  const left = tabs.slice(0, leftCount);
+  const right = tabs.slice(leftCount);
+  const columns = n + 1; // tabs + the center label column
+
+  // Grouped headers are an even-count feature (a header over each side).
+  const grouped = Array.isArray(groups) && groups.length === 2 && n % 2 === 0;
+  const sp = grouped ? GROUPED : PLAIN;
+
+  // In grouped mode the tab row sits lower; lift the center label back in line
+  // with the side tabs (right under the "+"), and nudge the tabs up for balance.
+  const centerLabelLift = grouped ? -13 : 0;
+  const tabLift = grouped ? -2 : 0;
+
+  // Horizontal center of the action column (== 50% for even counts).
+  const actionLeft = `${((leftCount + 0.5) / columns) * 100}%`;
+  const gridCols = `repeat(${columns}, 1fr)`;
+
+  return (
+    <nav style={{ position: "relative", flex: "none" }}>
+      {/* Bar — clips the glow at its top edge ("the line"). */}
+      <div
+        style={{
+          background: "var(--skl-color-surface)",
+          borderTop: "1px solid var(--skl-color-border)",
+          position: "relative",
+          overflow: "hidden",
+          // Keep the tabs clear of the iOS home indicator (additive to padBottom).
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        }}
+      >
+        {/* Glow layer (clipped to the bar; sits behind the grid). */}
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: -ACTION_OVERHANG,
+            left: actionLeft,
+            transform: "translateX(-50%)",
+            width: ACTION_SIZE,
+            height: ACTION_SIZE,
+            borderRadius: ACTION_RADIUS,
+            boxShadow: ACTION_GLOW,
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Optional group-header band (labels left vs right). */}
+        {grouped && (
+          <div style={{ display: "grid", gridTemplateColumns: gridCols, paddingTop: sp.padTop }}>
+            <div style={{ ...groupLabel, gridColumn: `1 / ${leftCount + 1}` }}>{groups![0]}</div>
+            <div style={{ ...groupLabel, gridColumn: `${leftCount + 2} / ${columns + 1}` }}>
+              {groups![1]}
+            </div>
+          </div>
+        )}
+
+        {/* Tab row. */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: gridCols,
+            paddingTop: grouped ? sp.headerGap : sp.padTop,
+            paddingBottom: sp.padBottom,
+            position: "relative",
+          }}
+        >
+          {left.map((t, i) => (
+            <Tab key={`l${i}`} {...t} lift={tabLift} />
+          ))}
+
+          {/* Center column: the action's label (the button floats above it). */}
+          <div style={cell}>
+            <div style={{ height: ICON }} />
+            <span
+              style={{
+                ...labelBase,
+                fontWeight: 700,
+                color: "var(--skl-color-brand)",
+                transform: `translateY(${centerLabelLift}px)`,
+              }}
+            >
+              {action.label}
+            </span>
+          </div>
+
+          {right.map((t, i) => (
+            <Tab key={`r${i}`} {...t} lift={tabLift} />
+          ))}
+        </div>
+      </div>
+
+      {/* Floating center button — unclipped, rises ACTION_OVERHANG above the bar. */}
+      <button
+        type="button"
+        onClick={action.onClick}
+        aria-label={action.label}
+        style={{
+          position: "absolute",
+          top: -ACTION_OVERHANG,
+          left: actionLeft,
+          transform: "translateX(-50%)",
+          width: ACTION_SIZE,
+          height: ACTION_SIZE,
+          borderRadius: ACTION_RADIUS,
+          background: "var(--skl-color-brand)",
+          color: "#fff",
+          border: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 3,
+          cursor: "pointer",
+        }}
+      >
+        <span style={{ display: "flex", width: PLUS, height: PLUS }}>{action.icon}</span>
+      </button>
+    </nav>
+  );
+}

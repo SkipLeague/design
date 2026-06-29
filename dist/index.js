@@ -2,6 +2,7 @@ export { ProfileMenu } from "./ProfileMenu.js";
 export { AppBadge } from "./AppBadge.js";
 export { AppLogo } from "./AppLogo.js";
 export { TopBar, TopBarIconButton } from "./TopBar.js";
+export { BottomNav } from "./BottomNav.js";
 export { ShareMenu } from "./ShareMenu.js";
 export { Button } from "./Button.js";
 export { Field, Input } from "./Field.js";
