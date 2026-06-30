@@ -1,5 +1,5 @@
 /** A SkipLeague app's logo glyph (monoline, drawn on the brand tile). */
-export type AppGlyph = "lists" | "racquetball" | "trips";
+export type AppGlyph = "lists" | "racquetball" | "trips" | "gifts" | "reading" | "today";
 /**
  * The per-app logo mark — a brand-green rounded tile holding a white monoline
  * glyph. Replaces the single-letter {@link AppBadge}; gives each SkipLeague app a
