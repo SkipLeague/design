@@ -220,15 +220,13 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
             <Tab key={`l${i}`} {...t} lift={tabLift} />
           ))}
 
-          {/* Center column: the action's label. It's a button (not inert text)
-              so tapping the label triggers the action too — the floating "+"
-              only covers the area above the label. */}
-          <button
-            type="button"
-            onClick={action.onClick}
-            aria-label={action.ariaLabel ?? action.label}
-            style={{ ...cell, background: "none", border: "none", padding: 0, cursor: "pointer" }}
-          >
+          {/* Center column: the action's label. Pointer-clickable (tapping the
+              word fires the action too) but NOT a separate focusable control or
+              screen-reader announcement — the floating "+" below is the single
+              control for the action, so `aria-hidden` here avoids a duplicate tab
+              stop / double announcement. Keyboard & SR users get exactly one
+              control per action; touch users can still tap the word. */}
+          <div onClick={action.onClick} aria-hidden style={{ ...cell, cursor: "pointer" }}>
             <div style={{ height: ICON }} />
             <span
               style={{
@@ -240,7 +238,7 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
             >
               {action.label}
             </span>
-          </button>
+          </div>
 
           {right.map((t, i) => (
             <Tab key={`r${i}`} {...t} lift={tabLift} />
