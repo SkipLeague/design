@@ -23,9 +23,11 @@ export interface ProfileMenuProps {
     apps?: AppLink[];
     /**
      * Slugs of the apps THIS user has enabled (e.g. the platform's `app_slugs`).
-     * When provided, the switcher shows only those apps (the current app is always
-     * kept), so every app shows the same "your apps" set without each one
-     * re-implementing the filter. Omit to list every app in `apps`.
+     * When provided and non-empty, the switcher shows only those apps (the current
+     * app is always kept), so every app shows the same "your apps" set without each
+     * one re-implementing the filter. Omit — or pass an EMPTY array — to list every
+     * app in `apps`. (Empty is treated as "show all" so super-admins, who are
+     * authorized without per-app slugs, don't get an empty switcher.)
      */
     enabledSlugs?: string[];
     /** Target of the "Manage account" link. Defaults to the platform account page. */
