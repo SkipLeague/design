@@ -1,0 +1,54 @@
+name: Publish to npm
+
+# Publishes @skipleague/design to npm on each version tag via OIDC "Trusted
+# Publishing" — NO stored npm token. GitHub Actions mints a short-lived,
+# workflow-scoped token that npm trusts (the same OIDC model as our AWS deploys),
+# so there's no long-lived secret to leak.
+#
+# One-time setup (owner):
+#   1. First publish (creates the package so a trusted publisher can be attached):
+#        cd design && npm login && npm publish --access public
+#   2. On npmjs.com → the @skipleague/design package → Settings → "Trusted
+#      Publisher" → GitHub Actions, with:
+#        Organization/owner: SkipLeague
+#        Repository:         design
+#        Workflow filename:  publish.yml
+#   After that, every `vX.Y.Z` tag push publishes automatically with no token.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  id-token: write # mint the OIDC token npm trusts
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: "https://registry.npmjs.org"
+
+      # Trusted Publishing requires npm >= 11.5.1.
+      - run: npm install -g npm@latest
+
+      # Never publish a version that disagrees with the tag that triggered it.
+      - name: Verify tag matches package version
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$PKG_VERSION" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} != package.json version ${PKG_VERSION}" >&2
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm run build
+
+      # No NODE_AUTH_TOKEN — the npm CLI detects the OIDC identity automatically.
+      - run: npm publish --access public
