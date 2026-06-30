@@ -37,7 +37,7 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabled
     }, [open]);
     // Show only the apps this user has enabled (always keeping the current app),
     // when the caller passes the user's enabled slugs. Otherwise list every app.
-    const visibleApps = enabledSlugs
+    const visibleApps = enabledSlugs && enabledSlugs.length > 0
         ? apps.filter((a) => a.slug === currentSlug || enabledSlugs.includes(a.slug))
         : apps;
     const signedIn = !!(user?.displayName || user?.email);

@@ -28,9 +28,11 @@ export interface ProfileMenuProps {
   apps?: AppLink[];
   /**
    * Slugs of the apps THIS user has enabled (e.g. the platform's `app_slugs`).
-   * When provided, the switcher shows only those apps (the current app is always
-   * kept), so every app shows the same "your apps" set without each one
-   * re-implementing the filter. Omit to list every app in `apps`.
+   * When provided and non-empty, the switcher shows only those apps (the current
+   * app is always kept), so every app shows the same "your apps" set without each
+   * one re-implementing the filter. Omit — or pass an EMPTY array — to list every
+   * app in `apps`. (Empty is treated as "show all" so super-admins, who are
+   * authorized without per-app slugs, don't get an empty switcher.)
    */
   enabledSlugs?: string[];
   /** Target of the "Manage account" link. Defaults to the platform account page. */
@@ -110,9 +112,10 @@ export function ProfileMenu({
 
   // Show only the apps this user has enabled (always keeping the current app),
   // when the caller passes the user's enabled slugs. Otherwise list every app.
-  const visibleApps = enabledSlugs
-    ? apps.filter((a) => a.slug === currentSlug || enabledSlugs.includes(a.slug))
-    : apps;
+  const visibleApps =
+    enabledSlugs && enabledSlugs.length > 0
+      ? apps.filter((a) => a.slug === currentSlug || enabledSlugs.includes(a.slug))
+      : apps;
 
   const signedIn = !!(user?.displayName || user?.email);
   // Signed-out menu only when a sign-in handler is supplied — otherwise keep the
