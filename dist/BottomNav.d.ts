@@ -16,7 +16,16 @@ export interface BottomNavTab {
     onClick?: () => void;
 }
 export interface BottomNavAction {
+    /** Short visual label under the "+" (e.g. "List", "Match"). */
     label: string;
+    /**
+     * Accessible name for the action control, announced to screen-reader and
+     * voice-control users. Use a verb phrase ("New list", "Log match") so the
+     * button isn't read as a bare noun confusable with a tab. Falls back to
+     * `label`. The visual label always stays `label`; per WCAG 2.5.3, keep
+     * `label`'s text inside `ariaLabel` (e.g. label "List" → ariaLabel "New list").
+     */
+    ariaLabel?: string;
     /** The "+" glyph (white, ~26px, stroke 2.4). Inherits white from the button. */
     icon: ReactNode;
     onClick?: () => void;
