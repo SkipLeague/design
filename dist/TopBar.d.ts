@@ -20,7 +20,7 @@ export declare function TopBar({ app, appName, actions, compact, ...profile }: {
     actions?: ReactNode;
     /** Mobile sizing (48px bar) vs the default 54px. */
     compact?: boolean;
-} & Pick<ProfileMenuProps, "user" | "currentSlug" | "apps" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn">): import("react").JSX.Element;
+} & Pick<ProfileMenuProps, "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn">): import("react").JSX.Element;
 /**
  * A contextual top-bar action button (Print, Share, …) styled for the dark bar.
  * Pass a 17–18px line icon (stroke 2, currentColor) as children.
