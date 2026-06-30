@@ -1,20 +1,28 @@
 name: Publish to npm
 
-# Publishes @skipleague/design to the public npm registry on every version tag.
-# Apps then consume it as a normal package (e.g. "@skipleague/design": "^0.4.0")
-# instead of a github git ref — no cloning, no ssh/https lockfile fragility.
+# Publishes @skipleague/design to npm on each version tag via OIDC "Trusted
+# Publishing" — NO stored npm token. GitHub Actions mints a short-lived,
+# workflow-scoped token that npm trusts (the same OIDC model as our AWS deploys),
+# so there's no long-lived secret to leak.
 #
-# Prerequisites (one-time, owner):
-#   1. Own the `@skipleague` scope/org on npmjs.com.
-#   2. Create an npm "Automation" access token with publish rights.
-#   3. Add it as the `NPM_TOKEN` secret on this repo (Settings → Secrets → Actions).
-# The published version is package.json's `version`; bump it together with the tag
-# (the release tags v0.4.0–v0.4.4 already follow this).
+# One-time setup (owner):
+#   1. First publish (creates the package so a trusted publisher can be attached):
+#        cd design && npm login && npm publish --access public
+#   2. On npmjs.com → the @skipleague/design package → Settings → "Trusted
+#      Publisher" → GitHub Actions, with:
+#        Organization/owner: SkipLeague
+#        Repository:         design
+#        Workflow filename:  publish.yml
+#   After that, every `vX.Y.Z` tag push publishes automatically with no token.
 
 on:
   push:
     tags:
       - "v*"
+
+permissions:
+  id-token: write # mint the OIDC token npm trusts
+  contents: read
 
 jobs:
   publish:
@@ -24,11 +32,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: "https://registry.npmjs.org"
 
-      # Fail loudly if the tag doesn't match package.json's version, so we never
-      # publish a version that disagrees with the tag that triggered it.
+      # Trusted Publishing requires npm >= 11.5.1.
+      - run: npm install -g npm@latest
+
+      # Never publish a version that disagrees with the tag that triggered it.
       - name: Verify tag matches package version
         run: |
           PKG_VERSION="v$(node -p "require('./package.json').version")"
@@ -40,6 +50,5 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      # No NODE_AUTH_TOKEN — the npm CLI detects the OIDC identity automatically.
       - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
