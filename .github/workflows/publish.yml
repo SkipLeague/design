@@ -1,0 +1,45 @@
+name: Publish to npm
+
+# Publishes @skipleague/design to the public npm registry on every version tag.
+# Apps then consume it as a normal package (e.g. "@skipleague/design": "^0.4.0")
+# instead of a github git ref — no cloning, no ssh/https lockfile fragility.
+#
+# Prerequisites (one-time, owner):
+#   1. Own the `@skipleague` scope/org on npmjs.com.
+#   2. Create an npm "Automation" access token with publish rights.
+#   3. Add it as the `NPM_TOKEN` secret on this repo (Settings → Secrets → Actions).
+# The published version is package.json's `version`; bump it together with the tag
+# (the release tags v0.4.0–v0.4.4 already follow this).
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      # Fail loudly if the tag doesn't match package.json's version, so we never
+      # publish a version that disagrees with the tag that triggered it.
+      - name: Verify tag matches package version
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$PKG_VERSION" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} != package.json version ${PKG_VERSION}" >&2
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm run build
+
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
