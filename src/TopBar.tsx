@@ -28,7 +28,10 @@ export function TopBar({
   actions?: ReactNode;
   /** Mobile sizing (48px bar) vs the default 54px. */
   compact?: boolean;
-} & Pick<ProfileMenuProps, "user" | "currentSlug" | "apps" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn">) {
+} & Pick<
+  ProfileMenuProps,
+  "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn"
+>) {
   const bar: CSSProperties = {
     display: "flex",
     alignItems: "center",
