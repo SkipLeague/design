@@ -120,12 +120,12 @@ export function BottomNav({ tabs, action, groups }) {
                             paddingTop: grouped ? sp.headerGap : sp.padTop,
                             paddingBottom: sp.padBottom,
                             position: "relative",
-                        }, children: [left.map((t, i) => (_jsx(Tab, { ...t, lift: tabLift }, `l${i}`))), _jsxs("button", { type: "button", onClick: action.onClick, style: { ...cell, background: "none", border: "none", padding: 0, cursor: "pointer" }, children: [_jsx("div", { style: { height: ICON } }), _jsx("span", { style: {
+                        }, children: [left.map((t, i) => (_jsx(Tab, { ...t, lift: tabLift }, `l${i}`))), _jsxs("button", { type: "button", onClick: action.onClick, "aria-label": action.ariaLabel ?? action.label, style: { ...cell, background: "none", border: "none", padding: 0, cursor: "pointer" }, children: [_jsx("div", { style: { height: ICON } }), _jsx("span", { style: {
                                             ...labelBase,
                                             fontWeight: 700,
                                             color: accent,
                                             transform: `translateY(${centerLabelLift}px)`,
-                                        }, children: action.label })] }), right.map((t, i) => (_jsx(Tab, { ...t, lift: tabLift }, `r${i}`)))] })] }), _jsx("button", { type: "button", onClick: action.onClick, "aria-label": action.label, style: {
+                                        }, children: action.label })] }), right.map((t, i) => (_jsx(Tab, { ...t, lift: tabLift }, `r${i}`)))] })] }), _jsx("button", { type: "button", onClick: action.onClick, "aria-label": action.ariaLabel ?? action.label, style: {
                     position: "absolute",
                     top: -ACTION_OVERHANG,
                     left: actionLeft,

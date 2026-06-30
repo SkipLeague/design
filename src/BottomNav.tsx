@@ -55,7 +55,16 @@ export interface BottomNavTab {
 }
 
 export interface BottomNavAction {
+  /** Short visual label under the "+" (e.g. "List", "Match"). */
   label: string;
+  /**
+   * Accessible name for the action control, announced to screen-reader and
+   * voice-control users. Use a verb phrase ("New list", "Log match") so the
+   * button isn't read as a bare noun confusable with a tab. Falls back to
+   * `label`. The visual label always stays `label`; per WCAG 2.5.3, keep
+   * `label`'s text inside `ariaLabel` (e.g. label "List" → ariaLabel "New list").
+   */
+  ariaLabel?: string;
   /** The "+" glyph (white, ~26px, stroke 2.4). Inherits white from the button. */
   icon: ReactNode;
   onClick?: () => void;
@@ -217,6 +226,7 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
           <button
             type="button"
             onClick={action.onClick}
+            aria-label={action.ariaLabel ?? action.label}
             style={{ ...cell, background: "none", border: "none", padding: 0, cursor: "pointer" }}
           >
             <div style={{ height: ICON }} />
@@ -242,7 +252,7 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
       <button
         type="button"
         onClick={action.onClick}
-        aria-label={action.label}
+        aria-label={action.ariaLabel ?? action.label}
         style={{
           position: "absolute",
           top: -ACTION_OVERHANG,
