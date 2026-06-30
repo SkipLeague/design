@@ -9,6 +9,15 @@ function glyphPaths(app, color) {
             return (_jsxs(_Fragment, { children: [_jsx("ellipse", { cx: "10", cy: "9", rx: "5.4", ry: "6.6", transform: "rotate(-34 10 9)" }), _jsx("path", { d: "M6.6 14.2L3.4 19.4" }), _jsx("circle", { cx: "18", cy: "17.4", r: "2.3", fill: color, stroke: "none" })] }));
         case "trips":
             return (_jsxs(_Fragment, { children: [_jsx("path", { d: "M12 21.5s6.6-5.8 6.6-10.5a6.6 6.6 0 1 0-13.2 0c0 4.7 6.6 10.5 6.6 10.5z" }), _jsx("circle", { cx: "12", cy: "10.8", r: "2.4" })] }));
+        case "gifts":
+            // Gift box: lid band, body, vertical ribbon, and a two-loop bow.
+            return (_jsxs(_Fragment, { children: [_jsx("rect", { x: "3.5", y: "8", width: "17", height: "4.5", rx: "1" }), _jsx("path", { d: "M5 12.5V20h14v-7.5" }), _jsx("path", { d: "M12 8v12" }), _jsx("path", { d: "M12 8C11 5.5 9.5 4.2 8.2 4.9 6.9 5.6 8 8 12 8Z" }), _jsx("path", { d: "M12 8c1-2.5 2.5-3.8 3.8-3.1C17.1 5.6 16 8 12 8Z" })] }));
+        case "reading":
+            // Open book: two pages meeting at a center spine.
+            return (_jsxs(_Fragment, { children: [_jsx("path", { d: "M12 6.5C9.8 5.1 6.4 4.6 4 5.3v12.6c2.4-.7 5.8-.2 8 1.2 2.2-1.4 5.6-1.9 8-1.2V5.3C17.6 4.6 14.2 5.1 12 6.5Z" }), _jsx("path", { d: "M12 6.5V19.3" })] }));
+        case "today":
+            // Sun = "today" / the day.
+            return (_jsxs(_Fragment, { children: [_jsx("circle", { cx: "12", cy: "12", r: "3.8" }), _jsx("path", { d: "M12 2.6V5" }), _jsx("path", { d: "M12 19V21.4" }), _jsx("path", { d: "M2.6 12H5" }), _jsx("path", { d: "M19 12H21.4" }), _jsx("path", { d: "M5.2 5.2 6.9 6.9" }), _jsx("path", { d: "M17.1 17.1 18.8 18.8" }), _jsx("path", { d: "M18.8 5.2 17.1 6.9" }), _jsx("path", { d: "M6.9 17.1 5.2 18.8" })] }));
     }
 }
 /**
