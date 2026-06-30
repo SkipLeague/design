@@ -168,7 +168,11 @@ export function BottomNav({ tabs, action, groups }: BottomNavProps) {
     : ACTION_GLOW;
 
   return (
-    <nav style={{ position: "relative", flex: "none" }}>
+    // `display: block` is set explicitly (not left to the nav default) so a host
+    // app's global `nav { display: grid/flex }` rule can't override it and
+    // collapse the full-width bar — the children below rely on normal block flow
+    // (the bar fills the width; the floating "+" is absolutely positioned).
+    <nav style={{ display: "block", position: "relative", flex: "none" }}>
       {/* Bar — clips the glow at its top edge ("the line"). */}
       <div
         style={{

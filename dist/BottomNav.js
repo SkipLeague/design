@@ -97,7 +97,12 @@ export function BottomNav({ tabs, action, groups }) {
     const glow = activeTab?.color
         ? `0 0 22px 4px color-mix(in srgb, ${activeTab.color} 55%, transparent), 0 10px 22px color-mix(in srgb, ${activeTab.color} 30%, transparent)`
         : ACTION_GLOW;
-    return (_jsxs("nav", { style: { position: "relative", flex: "none" }, children: [_jsxs("div", { style: {
+    return (
+    // `display: block` is set explicitly (not left to the nav default) so a host
+    // app's global `nav { display: grid/flex }` rule can't override it and
+    // collapse the full-width bar — the children below rely on normal block flow
+    // (the bar fills the width; the floating "+" is absolutely positioned).
+    _jsxs("nav", { style: { display: "block", position: "relative", flex: "none" }, children: [_jsxs("div", { style: {
                     background: "var(--skl-color-surface)",
                     borderTop: "1px solid var(--skl-color-border)",
                     position: "relative",
