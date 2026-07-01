@@ -49,6 +49,11 @@ const CSS = `
     grid-template-columns: 236px 1fr 340px;
     grid-template-areas: "top top top" "nav main detail";
   }
+  /* Views without a detail panel: drop the docked column (sidebar + content only). */
+  .skl-shell--no-detail {
+    grid-template-columns: 236px 1fr;
+    grid-template-areas: "top top" "nav main";
+  }
   .skl-shell__rail { display: none; }
   .skl-shell__sidebar { grid-area: nav; display: block; border-right: 1px solid var(--skl-color-border); }
   .skl-shell__detail {
@@ -77,5 +82,5 @@ const CSS = `
  * scrolls internally.
  */
 export function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen = false, id, }) {
-    return (_jsxs("div", { className: "skl-shell", id: id, children: [_jsx("style", { children: CSS }), _jsx("div", { className: "skl-shell__top", children: topBar }), sidebar && _jsx("div", { className: "skl-shell__sidebar", children: sidebar }), rail && _jsx("div", { className: "skl-shell__rail", children: rail }), _jsx("div", { className: "skl-shell__main", children: main }), detail && _jsx("div", { className: `skl-shell__detail${detailOpen ? " is-open" : ""}`, children: detail }), bottomNav && _jsx("div", { className: "skl-shell__bottom", children: bottomNav })] }));
+    return (_jsxs("div", { className: `skl-shell${detail ? "" : " skl-shell--no-detail"}`, id: id, children: [_jsx("style", { children: CSS }), _jsx("div", { className: "skl-shell__top", children: topBar }), sidebar && _jsx("div", { className: "skl-shell__sidebar", children: sidebar }), rail && _jsx("div", { className: "skl-shell__rail", children: rail }), _jsx("div", { className: "skl-shell__main", children: main }), detail && _jsx("div", { className: `skl-shell__detail${detailOpen ? " is-open" : ""}`, children: detail }), bottomNav && _jsx("div", { className: "skl-shell__bottom", children: bottomNav })] }));
 }

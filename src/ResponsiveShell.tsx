@@ -70,6 +70,11 @@ const CSS = `
     grid-template-columns: 236px 1fr 340px;
     grid-template-areas: "top top top" "nav main detail";
   }
+  /* Views without a detail panel: drop the docked column (sidebar + content only). */
+  .skl-shell--no-detail {
+    grid-template-columns: 236px 1fr;
+    grid-template-areas: "top top" "nav main";
+  }
   .skl-shell__rail { display: none; }
   .skl-shell__sidebar { grid-area: nav; display: block; border-right: 1px solid var(--skl-color-border); }
   .skl-shell__detail {
@@ -109,7 +114,7 @@ export function ResponsiveShell({
   id,
 }: ResponsiveShellProps) {
   return (
-    <div className="skl-shell" id={id}>
+    <div className={`skl-shell${detail ? "" : " skl-shell--no-detail"}`} id={id}>
       <style>{CSS}</style>
       <div className="skl-shell__top">{topBar}</div>
       {sidebar && <div className="skl-shell__sidebar">{sidebar}</div>}
