@@ -11,6 +11,28 @@ export type AppGlyph =
   | "guide"
   | "flow";
 
+/** Every app that has a glyph, for slug→glyph resolution and fallbacks. */
+export const APP_GLYPHS: readonly AppGlyph[] = [
+  "lists",
+  "racquetball",
+  "trips",
+  "gifts",
+  "reading",
+  "today",
+  "guide",
+  "flow",
+];
+
+/**
+ * Resolve a platform app slug (e.g. `"skipracquetball"`) to its {@link AppGlyph}
+ * by dropping the `skip` prefix, or `null` when no glyph exists for it (so a
+ * caller can fall back to a letter {@link AppBadge}). Case-insensitive.
+ */
+export function appGlyphForSlug(slug: string): AppGlyph | null {
+  const key = slug.replace(/^skip/i, "").toLowerCase();
+  return (APP_GLYPHS as readonly string[]).includes(key) ? (key as AppGlyph) : null;
+}
+
 // Exact 24×24 glyph paths (design_handoff_app_glyphs — the finalized round that
 // fixed racquetball, trips, and flow and added the guide mark). `color` only
 // matters for filled sub-shapes (e.g. the racquetball ball), which are filled

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { CircleUser, LogIn, LogOut, Settings } from "lucide-react";
 import { AppBadge } from "./AppBadge.js";
+import { AppLogo, appGlyphForSlug } from "./AppLogo.js";
 import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, type AppLink } from "./apps.js";
 
 export interface ProfileMenuUser {
@@ -202,9 +203,11 @@ export function ProfileMenu({
                   <div style={switchHeading}>Switch app</div>
                   {visibleApps.map((a) => {
                     const isCurrent = a.slug === currentSlug;
+                    // Per-app glyph when one exists; letter badge otherwise.
+                    const glyph = appGlyphForSlug(a.slug);
                     const inner = (
                       <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <AppBadge name={a.name} />
+                        {glyph ? <AppLogo app={glyph} size={22} /> : <AppBadge name={a.name} />}
                         {a.name}
                       </span>
                     );

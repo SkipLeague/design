@@ -2,6 +2,7 @@ import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-run
 import { useEffect, useRef, useState } from "react";
 import { CircleUser, LogIn, LogOut, Settings } from "lucide-react";
 import { AppBadge } from "./AppBadge.js";
+import { AppLogo, appGlyphForSlug } from "./AppLogo.js";
 import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS } from "./apps.js";
 /**
  * The canonical SkipLeague account control: a boxed user-icon button that opens
@@ -66,7 +67,9 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabled
                     transition: "border-color 0.15s, color 0.15s",
                 }, children: _jsx(CircleUser, { size: 22 }) }), open && (_jsx("div", { role: "menu", style: menuStyle, children: showSignedOut ? (_jsxs(_Fragment, { children: [_jsx("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: _jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: "Not signed in" }) }), _jsxs("button", { role: "menuitem", onClick: onSignIn, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogIn, { size: 15 }), " ", signInLabel] })] })) : (_jsxs(_Fragment, { children: [_jsxs("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: [_jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: label }), user?.email && _jsx("div", { style: { fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }, children: user.email })] }), visibleApps.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { style: switchHeading, children: "Switch app" }), visibleApps.map((a) => {
                                     const isCurrent = a.slug === currentSlug;
-                                    const inner = (_jsxs("span", { style: { display: "flex", alignItems: "center", gap: "0.5rem" }, children: [_jsx(AppBadge, { name: a.name }), a.name] }));
+                                    // Per-app glyph when one exists; letter badge otherwise.
+                                    const glyph = appGlyphForSlug(a.slug);
+                                    const inner = (_jsxs("span", { style: { display: "flex", alignItems: "center", gap: "0.5rem" }, children: [glyph ? _jsx(AppLogo, { app: glyph, size: 22 }) : _jsx(AppBadge, { name: a.name }), a.name] }));
                                     // The app you're in: light-green highlight, not clickable.
                                     return isCurrent ? (_jsx("div", { "aria-current": "page", style: { ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }, children: inner }, a.slug)) : (_jsx("a", { href: a.url, role: "menuitem", style: itemStyle, children: inner }, a.slug));
                                 })] })), _jsx("div", { style: divider }), accountItem, _jsx("div", { style: divider }), _jsxs("button", { role: "menuitem", onClick: onSignOut, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogOut, { size: 15 }), " Sign out"] })] })) }))] }));

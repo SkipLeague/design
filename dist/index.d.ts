@@ -1,7 +1,7 @@
 export { ProfileMenu } from "./ProfileMenu.js";
 export type { ProfileMenuProps, ProfileMenuUser, ProfileMenuLinkArgs } from "./ProfileMenu.js";
 export { AppBadge } from "./AppBadge.js";
-export { AppLogo } from "./AppLogo.js";
+export { AppLogo, APP_GLYPHS, appGlyphForSlug } from "./AppLogo.js";
 export type { AppGlyph } from "./AppLogo.js";
 export { TopBar, TopBarIconButton, DesktopActionBar } from "./TopBar.js";
 export type { TopBarTone } from "./TopBar.js";
