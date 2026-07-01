@@ -49,7 +49,7 @@ SkipToday/SkipEvolve launch), update `src/apps.ts` — every app's menu follows.
 
 ## Exports
 
-- `ProfileMenu`, `AppBadge`, `AppLogo`, `TopBar`, `TopBarIconButton`, `ShareMenu`
+- `ProfileMenu`, `AppBadge`, `AppLogo`, `TopBar`, `TopBarIconButton`, `TopBarBackButton`, `ShareMenu`
 - `Button`, `Card`, `Field`, `Input`, `Select`
 - `SKIPLEAGUE_APPS`, `SKIPLEAGUE_ACCOUNT_URL`, type `AppLink`
 - `@skipleague/design/tokens.css` — the design tokens (CSS variables)

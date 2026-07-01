@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from "react";
-import { Inbox, MoreHorizontal, Search, Upload, Users } from "lucide-react";
+import { ChevronLeft, Inbox, MoreHorizontal, Search, Upload, Users } from "lucide-react";
 import { AppLogo } from "./AppLogo.js";
 import { ProfileMenu } from "./ProfileMenu.js";
 /**
@@ -91,6 +91,20 @@ export function TopBarIconButton({ tone = "dark", compact = false, style, childr
             transition: "background .14s, border-color .14s, color .14s",
             ...style,
         }, ...props, children: children }));
+}
+/**
+ * The Back affordance for a drill-in / detail screen's app bar — a
+ * {@link TopBarIconButton} carrying a left chevron, so every app's back button
+ * looks and behaves identically (same tone-aware ghost styling as Search,
+ * Share, ProfileMenu, etc.). Pair it with the app's router, e.g.
+ * `<TopBarBackButton onClick={() => navigate(-1)} />`.
+ *
+ * Works on both a full {@link TopBar} (pass it via `actions`, though back
+ * usually sits on the LEFT — apps that build a contextual detail header place it
+ * directly) and a bespoke contextual header.
+ */
+export function TopBarBackButton({ tone = "dark", compact = false, label = "Back", ...props }) {
+    return (_jsx(TopBarIconButton, { tone: tone, compact: compact, "aria-label": label, title: label, ...props, children: _jsx(ChevronLeft, { size: 20 }) }));
 }
 /**
  * Alias for {@link TopBar} under its platform-app-bar name. Same component,
