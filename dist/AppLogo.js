@@ -18,6 +18,10 @@ function glyphPaths(app, color) {
         case "today":
             // Sun = "today" / the day.
             return (_jsxs(_Fragment, { children: [_jsx("circle", { cx: "12", cy: "12", r: "3.8" }), _jsx("path", { d: "M12 2.6V5" }), _jsx("path", { d: "M12 19V21.4" }), _jsx("path", { d: "M2.6 12H5" }), _jsx("path", { d: "M19 12H21.4" }), _jsx("path", { d: "M5.2 5.2 6.9 6.9" }), _jsx("path", { d: "M17.1 17.1 18.8 18.8" }), _jsx("path", { d: "M18.8 5.2 17.1 6.9" }), _jsx("path", { d: "M6.9 17.1 5.2 18.8" })] }));
+        case "flow":
+            // Two workflow nodes joined by an elbow connector — orchestration
+            // ("when X happens, do Y").
+            return (_jsxs(_Fragment, { children: [_jsx("rect", { x: "3", y: "3", width: "8", height: "8", rx: "2" }), _jsx("rect", { x: "13", y: "13", width: "8", height: "8", rx: "2" }), _jsx("path", { d: "M7 11v3.5a2 2 0 0 0 2 2h3.5" })] }));
     }
 }
 /**
