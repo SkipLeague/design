@@ -161,6 +161,10 @@ export function ProfileMenu({
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
+          // Explicit padding:0 — a host app's global `button { padding }` would
+          // otherwise collapse this fixed 38×38 box's content area (border-box)
+          // and shrink the icon to a dot.
+          padding: 0,
           width: 38,
           height: 38,
           borderRadius: "var(--skl-radius-control)",

@@ -82,6 +82,9 @@ export function TopBarIconButton({ tone = "dark", compact = false, style, childr
             justifyContent: "center",
             cursor: "pointer",
             flex: "0 0 auto",
+            // Explicit padding:0 so a host app's global `button { padding }` can't
+            // collapse this fixed-size box (border-box) and shrink the icon.
+            padding: 0,
             background: palette.background,
             border: `1px solid ${palette.border}`,
             color: palette.color,
