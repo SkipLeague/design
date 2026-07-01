@@ -3,7 +3,10 @@ export type { ProfileMenuProps, ProfileMenuUser, ProfileMenuLinkArgs } from "./P
 export { AppBadge } from "./AppBadge.js";
 export { AppLogo } from "./AppLogo.js";
 export type { AppGlyph } from "./AppLogo.js";
-export { TopBar, TopBarIconButton } from "./TopBar.js";
+export { TopBar, TopBarIconButton, DesktopActionBar } from "./TopBar.js";
+export type { TopBarTone } from "./TopBar.js";
+export { SidebarNav } from "./SidebarNav.js";
+export type { SidebarNavProps, SidebarNavSection, SidebarNavItem, SidebarNavLinkArgs } from "./SidebarNav.js";
 export { BottomNav } from "./BottomNav.js";
 export type { BottomNavProps, BottomNavTab, BottomNavAction } from "./BottomNav.js";
 export { ShareMenu } from "./ShareMenu.js";
