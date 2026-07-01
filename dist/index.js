@@ -1,7 +1,7 @@
 export { ProfileMenu } from "./ProfileMenu.js";
 export { AppBadge } from "./AppBadge.js";
 export { AppLogo, APP_GLYPHS, appGlyphForSlug } from "./AppLogo.js";
-export { TopBar, TopBarIconButton, DesktopActionBar } from "./TopBar.js";
+export { TopBar, TopBarIconButton, TopBarBackButton, DesktopActionBar } from "./TopBar.js";
 export { SidebarNav } from "./SidebarNav.js";
 export { IconRail } from "./IconRail.js";
 export { ResponsiveShell, RESPONSIVE_SHELL_DETAIL_BACK_CLASS } from "./ResponsiveShell.js";

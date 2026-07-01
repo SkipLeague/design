@@ -55,6 +55,23 @@ export declare function TopBarIconButton({ tone, compact, style, children, ...pr
     compact?: boolean;
 }): import("react").JSX.Element;
 /**
+ * The Back affordance for a drill-in / detail screen's app bar — a
+ * {@link TopBarIconButton} carrying a left chevron, so every app's back button
+ * looks and behaves identically (same tone-aware ghost styling as Search,
+ * Share, ProfileMenu, etc.). Pair it with the app's router, e.g.
+ * `<TopBarBackButton onClick={() => navigate(-1)} />`.
+ *
+ * Works on both a full {@link TopBar} (pass it via `actions`, though back
+ * usually sits on the LEFT — apps that build a contextual detail header place it
+ * directly) and a bespoke contextual header.
+ */
+export declare function TopBarBackButton({ tone, compact, label, ...props }: ButtonHTMLAttributes<HTMLButtonElement> & {
+    tone?: TopBarTone;
+    compact?: boolean;
+    /** Accessible label + tooltip (default "Back"). */
+    label?: string;
+}): import("react").JSX.Element;
+/**
  * Alias for {@link TopBar} under its platform-app-bar name. Same component,
  * same props — use whichever import name the app standardizes on.
  */
