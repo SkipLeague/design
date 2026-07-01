@@ -22,6 +22,7 @@ export const SKIPLEAGUE_APPS: AppLink[] = [
   { slug: "skipreading", name: "SkipReading", url: "https://reading.skipleague.com" },
   { slug: "skipgifts", name: "SkipGifts", url: "https://gifts.skipleague.com" },
   { slug: "skiptoday", name: "SkipToday", url: "https://today.skipleague.com" },
+  { slug: "skipflow", name: "SkipFlow", url: "https://flow.skipleague.com" },
 ];
 
 /** Default target for the menu's "Manage account" link (the platform account page). */

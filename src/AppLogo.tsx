@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /** A SkipLeague app's logo glyph (monoline, drawn on the brand tile). */
-export type AppGlyph = "lists" | "racquetball" | "trips" | "gifts" | "reading" | "today";
+export type AppGlyph = "lists" | "racquetball" | "trips" | "gifts" | "reading" | "today" | "flow";
 
 // Exact 24×24 glyph paths (design_handoff_top_bar). `color` only matters for the
 // racquetball ball, which is filled rather than stroked.
@@ -63,6 +63,16 @@ function glyphPaths(app: AppGlyph, color: string): ReactNode {
           <path d="M17.1 17.1 18.8 18.8" />
           <path d="M18.8 5.2 17.1 6.9" />
           <path d="M6.9 17.1 5.2 18.8" />
+        </>
+      );
+    case "flow":
+      // Two workflow nodes joined by an elbow connector — orchestration
+      // ("when X happens, do Y").
+      return (
+        <>
+          <rect x="3" y="3" width="8" height="8" rx="2" />
+          <rect x="13" y="13" width="8" height="8" rx="2" />
+          <path d="M7 11v3.5a2 2 0 0 0 2 2h3.5" />
         </>
       );
   }
