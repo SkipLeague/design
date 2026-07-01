@@ -26,7 +26,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic --build-script-name=build-storybook --exit-zero-on-changes"
   },
   "license": "UNLICENSED",
   "peerDependencies": {
@@ -41,6 +42,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.0.3",
+    "chromatic": "^17.8.0",
     "jsdom": "^29.1.1",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
