@@ -3,6 +3,8 @@ export { AppBadge } from "./AppBadge.js";
 export { AppLogo, APP_GLYPHS, appGlyphForSlug } from "./AppLogo.js";
 export { TopBar, TopBarIconButton, DesktopActionBar } from "./TopBar.js";
 export { SidebarNav } from "./SidebarNav.js";
+export { IconRail } from "./IconRail.js";
+export { ResponsiveShell, RESPONSIVE_SHELL_DETAIL_BACK_CLASS } from "./ResponsiveShell.js";
 export { BottomNav } from "./BottomNav.js";
 export { ShareMenu } from "./ShareMenu.js";
 export { Button } from "./Button.js";
