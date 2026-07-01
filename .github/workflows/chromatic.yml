@@ -1,0 +1,40 @@
+name: Chromatic
+
+# Visual regression for the shared design-system components. Chromatic builds the
+# Storybook (build-storybook), renders every story in its cloud, and diffs each
+# against the accepted baseline — so a visual change to a shared component (the
+# kind that shipped the profile-icon-collapse bug fleet-wide) is flagged on the PR.
+#
+# One-time setup (owner): create a Chromatic project at chromatic.com linked to
+# SkipLeague/design, then add its project token as the repo secret
+# CHROMATIC_PROJECT_TOKEN. Until that secret exists the publish step self-skips,
+# so this workflow never blocks a PR before setup.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    env:
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Chromatic needs full history to pick the baseline commit.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Publish to Chromatic
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' }}
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ env.CHROMATIC_PROJECT_TOKEN }}
+          buildScriptName: build-storybook
+          onlyChanged: true # TurboSnap — snapshot only stories affected by the diff.
+          exitZeroOnChanges: true # don't fail CI on visual changes; review + accept in Chromatic.
+      - name: Chromatic not configured
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN == '' }}
+        run: echo "CHROMATIC_PROJECT_TOKEN not set — skipping. Add the secret to enable visual regression."
