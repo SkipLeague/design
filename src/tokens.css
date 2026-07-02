@@ -17,8 +17,10 @@
 
   /* Dark header surface (the shared TopBar) + its on-dark foregrounds */
   --skl-color-header-dark: #0e2e2a;
+  --skl-color-header-dark-2: #155249;   /* gradient partner for the map hero */
   --skl-color-on-dark: #eafaf6;         /* primary text on the dark header */
   --skl-color-on-dark-muted: #9fe7d6;   /* muted icons on the dark header */
+  --skl-color-on-dark-faint: #7fd9c7;   /* subline / hero subtext on dark */
 
   /* Neutrals (slate) */
   --skl-color-text: #0f172a;
@@ -27,6 +29,9 @@
   --skl-color-border: #e2e8f0;
   --skl-color-surface: #ffffff;
   --skl-color-surface-muted: #f8fafc; /* disabled inputs, subtle fills */
+  --skl-color-canvas: #eef2f7;        /* list screen background */
+  --skl-color-divider: #eef2f7;       /* hairline between stat cells */
+  --skl-color-tile: #f1f5f9;          /* leading record tile fill */
 
   /* "Current" highlight (selected app / current page) */
   --skl-color-current-bg: #dcfce7;
@@ -37,6 +42,7 @@
   --skl-radius-control: 9px;
   --skl-radius-md: 6px; /* buttons, inputs, selects */
   --skl-radius-badge: 5px;
+  --skl-radius-card: 15px; /* record rows + list hero cards */
 
   /* Elevation */
   --skl-shadow-menu: 0 12px 32px rgba(2, 6, 23, 0.18);
