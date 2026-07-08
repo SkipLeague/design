@@ -22,15 +22,24 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
  */
 const ICON = 24; // tab icon box (24px line icons, stroke 2)
 const LABEL_GAP = 10; // icon -> label vertical gap
-const ACTION_SIZE = 53; // floating center button (square)
-const ACTION_RADIUS = 17; // center button corner radius
-const ACTION_OVERHANG = 10; // px the button rises above the bar's top edge
-const PLUS = 26; // "+" glyph box inside the button
-// Soft mint halo + a grounding shadow. Painted on a layer INSIDE the
-// overflow:hidden bar so it is clipped at the top edge — no glow above the line.
-const ACTION_GLOW = "0 0 22px 4px rgba(94,234,212,0.6), 0 10px 22px rgba(15,118,110,0.30)";
-// Two vertical-spacing presets that yield the SAME total bar height.
-const PLAIN = { padTop: 10, padBottom: 18, headerGap: 0 };
+const ACTION_SIZE = 48; // floating center button (square)
+const ACTION_RADIUS = 15; // center button corner radius
+const ACTION_OVERHANG = 16; // px the button rises above the bar's top edge
+const PLUS = 23; // "+" glyph box inside the button
+// Soft diffuse glow, no hard edge (design_handoff_bottom_nav_compact). Painted
+// on a layer INSIDE the overflow:hidden bar so it is clipped at the top edge —
+// no glow above the line.
+const ACTION_GLOW = "0 7px 15px rgba(15,118,110,.38), 0 0 18px 4px rgba(45,212,191,.4)";
+// PLAIN is the compact spec (design_handoff_bottom_nav_compact): padBottom
+// folds in the bar's own bottom safe-area padding (5px item + 4px bar) — the
+// OS safe-area inset stacks on top, unchanged, via the wrapper's separate
+// `env(safe-area-inset-bottom)`.
+//
+// GROUPED is untouched by that pass — no app passes `groups` today — and its
+// extra header-label row no longer fits PLAIN's shrunk budget without going
+// negative, so the two presets no longer yield the same total bar height.
+// Revisit GROUPED's own spacing if/when an app adopts `groups`.
+const PLAIN = { padTop: 4, padBottom: 9, headerGap: 0 };
 const GROUPED = { padTop: 5, padBottom: 6, headerGap: 5 };
 const cell = {
     display: "flex",
@@ -95,7 +104,7 @@ export function BottomNav({ tabs, action, groups }) {
     const activeTab = tabs.find((t) => t.active);
     const accent = activeTab?.color ?? "var(--skl-color-brand)";
     const glow = activeTab?.color
-        ? `0 0 22px 4px color-mix(in srgb, ${activeTab.color} 55%, transparent), 0 10px 22px color-mix(in srgb, ${activeTab.color} 30%, transparent)`
+        ? `0 7px 15px color-mix(in srgb, ${activeTab.color} 38%, transparent), 0 0 18px 4px color-mix(in srgb, ${activeTab.color} 40%, transparent)`
         : ACTION_GLOW;
     return (
     // `display: block` is set explicitly (not left to the nav default) so a host
