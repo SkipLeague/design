@@ -9,6 +9,7 @@ export const APP_GLYPHS = [
     "today",
     "guide",
     "flow",
+    "contacts",
 ];
 /**
  * Resolve a platform app slug (e.g. `"skipracquetball"`) to its {@link AppGlyph}
@@ -50,6 +51,12 @@ function glyphPaths(app, color) {
             // Two rounded cards linked by an elbow connector — orchestration
             // ("when X happens, do Y").
             return (_jsxs(_Fragment, { children: [_jsx("rect", { x: "3.5", y: "4.5", width: "7", height: "6", rx: "1.6" }), _jsx("rect", { x: "13.5", y: "13", width: "7", height: "6", rx: "1.6" }), _jsx("path", { d: "M10.5 7.5h2.5a2 2 0 0 1 2 2v3.5" })] }));
+        case "contacts":
+            // Card stack: a front contact card (avatar head + shoulders + two detail
+            // lines) overlapping a second card peeking behind it. Draw order matters —
+            // back card first so the front card overlaps it. Keep all six paths at every
+            // size; the shoulders arc is the piece most easily dropped when scaling down.
+            return (_jsxs(_Fragment, { children: [_jsx("path", { d: "M6.5 5.2V5a2 2 0 0 1 2-2H19a2 2 0 0 1 2 2v8.3" }), _jsx("rect", { x: "3", y: "8", width: "15.5", height: "12.5", rx: "2.2" }), _jsx("circle", { cx: "8", cy: "12.7", r: "1.9" }), _jsx("path", { d: "M5.4 17.5c.4-1.7 4.8-1.7 5.2 0" }), _jsx("path", { d: "M13 12h3" }), _jsx("path", { d: "M13 15.5h3" })] }));
     }
 }
 /**
