@@ -1,5 +1,5 @@
 /** A SkipLeague app's logo glyph (monoline, drawn on the brand tile). */
-export type AppGlyph = "lists" | "racquetball" | "trips" | "gifts" | "reading" | "today" | "guide" | "flow";
+export type AppGlyph = "lists" | "racquetball" | "trips" | "gifts" | "reading" | "today" | "guide" | "flow" | "contacts";
 /** Every app that has a glyph, for slug→glyph resolution and fallbacks. */
 export declare const APP_GLYPHS: readonly AppGlyph[];
 /**

@@ -9,7 +9,8 @@ export type AppGlyph =
   | "reading"
   | "today"
   | "guide"
-  | "flow";
+  | "flow"
+  | "contacts";
 
 /** Every app that has a glyph, for slug→glyph resolution and fallbacks. */
 export const APP_GLYPHS: readonly AppGlyph[] = [
@@ -21,6 +22,7 @@ export const APP_GLYPHS: readonly AppGlyph[] = [
   "today",
   "guide",
   "flow",
+  "contacts",
 ];
 
 /**
@@ -121,6 +123,21 @@ function glyphPaths(app: AppGlyph, color: string): ReactNode {
           <rect x="3.5" y="4.5" width="7" height="6" rx="1.6" />
           <rect x="13.5" y="13" width="7" height="6" rx="1.6" />
           <path d="M10.5 7.5h2.5a2 2 0 0 1 2 2v3.5" />
+        </>
+      );
+    case "contacts":
+      // Card stack: a front contact card (avatar head + shoulders + two detail
+      // lines) overlapping a second card peeking behind it. Draw order matters —
+      // back card first so the front card overlaps it. Keep all six paths at every
+      // size; the shoulders arc is the piece most easily dropped when scaling down.
+      return (
+        <>
+          <path d="M6.5 5.2V5a2 2 0 0 1 2-2H19a2 2 0 0 1 2 2v8.3" />
+          <rect x="3" y="8" width="15.5" height="12.5" rx="2.2" />
+          <circle cx="8" cy="12.7" r="1.9" />
+          <path d="M5.4 17.5c.4-1.7 4.8-1.7 5.2 0" />
+          <path d="M13 12h3" />
+          <path d="M13 15.5h3" />
         </>
       );
   }
