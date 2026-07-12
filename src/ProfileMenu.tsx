@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import { CircleUser, LogIn, LogOut, Settings } from "lucide-react";
 import { AppBadge } from "./AppBadge.js";
 import { AppLogo, appGlyphForSlug } from "./AppLogo.js";
-import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, type AppLink } from "./apps.js";
+import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, STATUS_DOT, type AppLifecycleStatus, type AppLink } from "./apps.js";
 
 export interface ProfileMenuUser {
   displayName?: string | null;
@@ -215,14 +215,21 @@ export function ProfileMenu({
                         {a.name}
                       </span>
                     );
+                    // Status dot, hard right, for anything not yet Live. Live apps get
+                    // none: most users can only reach Live apps, so a dot on every row
+                    // would say nothing. It rides in the row's existing flex gap, so it
+                    // adds no width to the menu.
+                    const dot = <StatusDot status={a.status} />;
                     // The app you're in: light-green highlight, not clickable.
                     return isCurrent ? (
-                      <div key={a.slug} aria-current="page" style={{ ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }}>
+                      <div key={a.slug} aria-current="page" style={{ ...appRowStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }}>
                         {inner}
+                        {dot}
                       </div>
                     ) : (
-                      <a key={a.slug} href={a.url} role="menuitem" style={itemStyle}>
+                      <a key={a.slug} href={a.url} role="menuitem" style={appRowStyle}>
                         {inner}
+                        {dot}
                       </a>
                     );
                   })}
@@ -269,6 +276,44 @@ const itemStyle: CSSProperties = {
   color: "var(--skl-color-text)",
   textDecoration: "none",
 };
+
+/**
+ * An app row: name hard left, status dot hard right. `space-between` does the work,
+ * so the dot costs no extra width — the menu is exactly as wide as it was before.
+ */
+const appRowStyle: CSSProperties = {
+  ...itemStyle,
+  justifyContent: "space-between",
+};
+
+/**
+ * The lifecycle dot shown at the right edge of an app row. Renders nothing for a Live
+ * app (or one whose status the caller didn't supply), so a user who can only reach
+ * Live apps — i.e. almost everyone — sees a switcher with no dots at all, unchanged
+ * from before. `title` + `aria-label` carry the status in words: at 8px, hue alone is
+ * exactly what red-green color blindness loses.
+ */
+function StatusDot({ status }: { status?: AppLifecycleStatus }) {
+  if (!status || status === "live") return null;
+  const { color, label } = STATUS_DOT[status];
+  const isOutline = status === "in_development";
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      title={label}
+      style={{
+        width: 8,
+        height: 8,
+        borderRadius: 999,
+        flex: "0 0 auto",
+        marginLeft: "0.5rem",
+        background: isOutline ? "transparent" : color,
+        border: isOutline ? `1.5px solid ${color}` : "none",
+      }}
+    />
+  );
+}
 
 const switchHeading: CSSProperties = {
   padding: "0.5rem 0.75rem 0.25rem",

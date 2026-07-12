@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { CircleUser, LogIn, LogOut, Settings } from "lucide-react";
 import { AppBadge } from "./AppBadge.js";
 import { AppLogo, appGlyphForSlug } from "./AppLogo.js";
-import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS } from "./apps.js";
+import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, STATUS_DOT } from "./apps.js";
 /**
  * The canonical SkipLeague account control: a boxed user-icon button that opens
  * a dropdown with the user's name/email, an inline **app switcher** (one click to
@@ -74,8 +74,13 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabled
                                     // Per-app glyph when one exists; letter badge otherwise.
                                     const glyph = appGlyphForSlug(a.slug);
                                     const inner = (_jsxs("span", { style: { display: "flex", alignItems: "center", gap: "0.5rem" }, children: [glyph ? _jsx(AppLogo, { app: glyph, size: 22 }) : _jsx(AppBadge, { name: a.name }), a.name] }));
+                                    // Status dot, hard right, for anything not yet Live. Live apps get
+                                    // none: most users can only reach Live apps, so a dot on every row
+                                    // would say nothing. It rides in the row's existing flex gap, so it
+                                    // adds no width to the menu.
+                                    const dot = _jsx(StatusDot, { status: a.status });
                                     // The app you're in: light-green highlight, not clickable.
-                                    return isCurrent ? (_jsx("div", { "aria-current": "page", style: { ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }, children: inner }, a.slug)) : (_jsx("a", { href: a.url, role: "menuitem", style: itemStyle, children: inner }, a.slug));
+                                    return isCurrent ? (_jsxs("div", { "aria-current": "page", style: { ...appRowStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }, children: [inner, dot] }, a.slug)) : (_jsxs("a", { href: a.url, role: "menuitem", style: appRowStyle, children: [inner, dot] }, a.slug));
                                 })] })), _jsx("div", { style: divider }), accountItem, _jsx("div", { style: divider }), _jsxs("button", { role: "menuitem", onClick: onSignOut, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogOut, { size: 15 }), " Sign out"] })] })) }))] }));
 }
 const menuStyle = {
@@ -99,6 +104,36 @@ const itemStyle = {
     color: "var(--skl-color-text)",
     textDecoration: "none",
 };
+/**
+ * An app row: name hard left, status dot hard right. `space-between` does the work,
+ * so the dot costs no extra width — the menu is exactly as wide as it was before.
+ */
+const appRowStyle = {
+    ...itemStyle,
+    justifyContent: "space-between",
+};
+/**
+ * The lifecycle dot shown at the right edge of an app row. Renders nothing for a Live
+ * app (or one whose status the caller didn't supply), so a user who can only reach
+ * Live apps — i.e. almost everyone — sees a switcher with no dots at all, unchanged
+ * from before. `title` + `aria-label` carry the status in words: at 8px, hue alone is
+ * exactly what red-green color blindness loses.
+ */
+function StatusDot({ status }) {
+    if (!status || status === "live")
+        return null;
+    const { color, label } = STATUS_DOT[status];
+    const isOutline = status === "in_development";
+    return (_jsx("span", { role: "img", "aria-label": label, title: label, style: {
+            width: 8,
+            height: 8,
+            borderRadius: 999,
+            flex: "0 0 auto",
+            marginLeft: "0.5rem",
+            background: isOutline ? "transparent" : color,
+            border: isOutline ? `1.5px solid ${color}` : "none",
+        } }));
+}
 const switchHeading = {
     padding: "0.5rem 0.75rem 0.25rem",
     fontSize: "var(--skl-text-2xs)",
