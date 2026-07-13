@@ -41,5 +41,33 @@ export declare const STATUS_DOT: Record<Exclude<AppLifecycleStatus, "live">, {
  * working; remove once every app passes backend-sourced apps.
  */
 export declare const SKIPLEAGUE_APPS: AppLink[];
+/**
+ * An app record as the PLATFORM returns it (`GET /me/apps`, token introspection).
+ * Only the fields the switcher reads are declared; a caller passing richer records
+ * (id, description, display_rank…) satisfies this and the extras are ignored.
+ */
+export interface PlatformApp {
+    slug: string;
+    name: string;
+    /** Apps still being built may have none; those can't be switched to. */
+    url?: string | null;
+    status?: AppLifecycleStatus;
+}
+/**
+ * Turn the platform's app records into switcher links. **Use this instead of mapping
+ * the fields by hand.**
+ *
+ * Every app in the fleet was hand-rolling the same
+ * `.map((a) => ({ slug, name, url }))`, and SkipPlatform's copy quietly omitted
+ * `status` — so the platform's own switcher was the one surface in the fleet with no
+ * lifecycle dots. Nothing errored; a feature simply stopped rendering. A hand-rolled
+ * subset silently drops whatever it doesn't name, and that failure is invisible.
+ *
+ * With the mapping here, the next field `AppLink` gains reaches every app by bumping
+ * this package, not by editing nine repos and hoping none of them is forgotten.
+ *
+ * Drops apps with no URL: the switcher's whole job is to link somewhere.
+ */
+export declare function appLinksFrom(apps: readonly PlatformApp[] | null | undefined): AppLink[];
 /** Default target for the menu's "Manage account" link (the platform account page). */
 export declare const SKIPLEAGUE_ACCOUNT_URL = "https://skipleague.com/account";

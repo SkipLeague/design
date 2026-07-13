@@ -27,6 +27,7 @@
   --skl-color-text-muted: #64748b;
   --skl-color-text-faint: #94a3b8;
   --skl-color-border: #e2e8f0;
+  --skl-color-border-strong: #cbd5e1;  /* chevrons, and borders that must read against a card */
   --skl-color-surface: #ffffff;
   --skl-color-surface-muted: #f8fafc; /* disabled inputs, subtle fills */
   --skl-color-canvas: #eef2f7;        /* list screen background */

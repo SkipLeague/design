@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useEffect, useRef, useState, } from "react";
-import { Copy, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { ChevronRight, Copy, MoreVertical, Pencil, Trash2 } from "lucide-react";
 const TILE = 64;
 /** Standard convenience actions so callers don't re-declare the common three. */
 export function recordRowActions(handlers) {
@@ -20,7 +20,7 @@ export function recordRowActions(handlers) {
  *
  * Requires `@skipleague/design/tokens.css`.
  */
-export function RecordRow({ leading, title, subline, stat, onOpen, actions = [], busy = false, style, }) {
+export function RecordRow({ leading, title, subline, stat, onOpen, actions = [], trailing, busy = false, style, }) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [hover, setHover] = useState(false);
     // Swipe-to-reveal offset (touch only): 0 = closed, negative = revealed.
@@ -143,7 +143,14 @@ export function RecordRow({ leading, title, subline, stat, onOpen, actions = [],
                                     textTransform: "uppercase",
                                     letterSpacing: 0.4,
                                     color: "var(--skl-color-text-faint)",
-                                }, children: stat.label })] })), actions.length > 0 && (_jsx("button", { "aria-label": "Record actions", onClick: (e) => {
+                                }, children: stat.label })] })), trailing != null && (_jsx("div", { "aria-hidden": true, style: {
+                            flex: "0 0 auto",
+                            alignSelf: "center",
+                            display: "grid",
+                            placeItems: "center",
+                            paddingRight: 12,
+                            color: "var(--skl-color-border-strong)",
+                        }, children: trailing === "chevron" ? _jsx(ChevronRight, { size: 19, strokeWidth: 2.4 }) : trailing })), actions.length > 0 && (_jsx("button", { "aria-label": "Record actions", onClick: (e) => {
                             e.stopPropagation();
                             setMenuOpen((o) => !o);
                         }, style: {

@@ -45,8 +45,19 @@ export interface RecordRowProps {
     /**
      * Edit / duplicate / delete. Surfaced behind swipe (touch) and a `⋯` menu
      * (pointer) — never as always-visible inline buttons.
+     *
+     * Omit entirely for rows whose actions live on the record's own screen: with
+     * no actions there is no swipe, no tray and no `⋯`, and the row is a plain
+     * tap target. Pair that with `trailing="chevron"`.
      */
     actions?: RecordRowAction[];
+    /**
+     * Trailing affordance after the stat. `"chevron"` draws the standard
+     * chevron-right that marks the row as opening a detail screen — use it on
+     * action-less rows so the tap target reads as navigation rather than a
+     * dead row.
+     */
+    trailing?: "chevron" | ReactNode;
     /** Dim + disable interaction while a mutation is in flight. */
     busy?: boolean;
     style?: CSSProperties;
@@ -64,4 +75,4 @@ export declare function recordRowActions(handlers: {
  *
  * Requires `@skipleague/design/tokens.css`.
  */
-export declare function RecordRow({ leading, title, subline, stat, onOpen, actions, busy, style, }: RecordRowProps): import("react").JSX.Element;
+export declare function RecordRow({ leading, title, subline, stat, onOpen, actions, trailing, busy, style, }: RecordRowProps): import("react").JSX.Element;
