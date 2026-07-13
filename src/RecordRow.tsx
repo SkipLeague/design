@@ -6,7 +6,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from "react";
-import { Copy, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { ChevronRight, Copy, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 /**
  * The leading 64px tile of a record row. One of:
@@ -42,8 +42,19 @@ export interface RecordRowProps {
   /**
    * Edit / duplicate / delete. Surfaced behind swipe (touch) and a `⋯` menu
    * (pointer) — never as always-visible inline buttons.
+   *
+   * Omit entirely for rows whose actions live on the record's own screen: with
+   * no actions there is no swipe, no tray and no `⋯`, and the row is a plain
+   * tap target. Pair that with `trailing="chevron"`.
    */
   actions?: RecordRowAction[];
+  /**
+   * Trailing affordance after the stat. `"chevron"` draws the standard
+   * chevron-right that marks the row as opening a detail screen — use it on
+   * action-less rows so the tap target reads as navigation rather than a
+   * dead row.
+   */
+  trailing?: "chevron" | ReactNode;
   /** Dim + disable interaction while a mutation is in flight. */
   busy?: boolean;
   style?: CSSProperties;
@@ -81,6 +92,7 @@ export function RecordRow({
   stat,
   onOpen,
   actions = [],
+  trailing,
   busy = false,
   style,
 }: RecordRowProps) {
@@ -273,6 +285,22 @@ export function RecordRow({
             >
               {stat.label}
             </div>
+          </div>
+        )}
+
+        {trailing != null && (
+          <div
+            aria-hidden
+            style={{
+              flex: "0 0 auto",
+              alignSelf: "center",
+              display: "grid",
+              placeItems: "center",
+              paddingRight: 12,
+              color: "var(--skl-color-border-strong)",
+            }}
+          >
+            {trailing === "chevron" ? <ChevronRight size={19} strokeWidth={2.4} /> : trailing}
           </div>
         )}
 

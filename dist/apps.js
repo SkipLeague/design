@@ -29,5 +29,25 @@ export const SKIPLEAGUE_APPS = [
     { slug: "skipflow", name: "SkipFlow", url: "https://flow.skipleague.com" },
     { slug: "skipcontacts", name: "SkipContacts", url: "https://contacts.skipleague.com" },
 ];
+/**
+ * Turn the platform's app records into switcher links. **Use this instead of mapping
+ * the fields by hand.**
+ *
+ * Every app in the fleet was hand-rolling the same
+ * `.map((a) => ({ slug, name, url }))`, and SkipPlatform's copy quietly omitted
+ * `status` — so the platform's own switcher was the one surface in the fleet with no
+ * lifecycle dots. Nothing errored; a feature simply stopped rendering. A hand-rolled
+ * subset silently drops whatever it doesn't name, and that failure is invisible.
+ *
+ * With the mapping here, the next field `AppLink` gains reaches every app by bumping
+ * this package, not by editing nine repos and hoping none of them is forgotten.
+ *
+ * Drops apps with no URL: the switcher's whole job is to link somewhere.
+ */
+export function appLinksFrom(apps) {
+    return (apps ?? [])
+        .filter((a) => !!a.url)
+        .map((a) => ({ slug: a.slug, name: a.name, url: a.url, status: a.status }));
+}
 /** Default target for the menu's "Manage account" link (the platform account page). */
 export const SKIPLEAGUE_ACCOUNT_URL = "https://skipleague.com/account";

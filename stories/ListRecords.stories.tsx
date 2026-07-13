@@ -74,6 +74,24 @@ export const Artwork: Story = {
   ),
 };
 
+/**
+ * Rows that open a detail screen: no `actions`, so no swipe and no `⋯`. The
+ * chevron carries the affordance instead, and edit/duplicate/delete live on the
+ * record's own screen (SkipLists record actions).
+ */
+export const OpensDetail: Story = {
+  render: () => (
+    <Screen>
+      <ListSearch value="" onChange={noop} placeholder="Search records" size="lg" />
+      <ListActionBar count={12} onSort={noop} onAdd={noop} style={{ margin: "13px 2px 9px" }} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <RecordRow leading={{ kind: "gradient", gradient: "linear-gradient(135deg,#bfdbfe,#93c5fd)", node: <ImageIcon size={22} /> }} title="Depression Glass Bowl" subline="Imperial Glass Co. (attributed) · c. 1950" trailing="chevron" onOpen={noop} />
+        <RecordRow leading={{ kind: "gradient", gradient: "linear-gradient(135deg,#fbcfe8,#f9a8d4)", node: <ImageIcon size={22} /> }} title="Walnut Sideboard" subline="Mid-century · Oak Park estate" trailing="chevron" onOpen={noop} />
+      </div>
+    </Screen>
+  ),
+};
+
 /** Generic custom list (e.g. Dean's Video Games): glyph tile + numeric stat. */
 export const CustomList: Story = {
   render: () => (

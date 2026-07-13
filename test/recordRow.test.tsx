@@ -42,6 +42,17 @@ describe("RecordRow", () => {
     expect(onDelete).not.toHaveBeenCalled();
   });
 
+  it("has no swipe tray or ⋯ menu when no actions are given", () => {
+    const { container } = render(
+      <RecordRow leading={{ kind: "emoji", emoji: "🇵🇹" }} title="Portugal" onOpen={vi.fn()} trailing="chevron" />,
+    );
+    expect(screen.queryByRole("button", { name: "Record actions" })).toBeNull();
+    // The foreground row must sit flush — nothing revealed behind it to slide over.
+    const row = screen.getByRole("button", { name: /portugal/i });
+    expect(row.style.transform).toBe("translateX(0px)");
+    expect(container.querySelector(".lucide-chevron-right")).not.toBeNull();
+  });
+
   it("renders an image tile when a photo is supplied", () => {
     render(<RecordRow leading={{ kind: "image", src: "/x.jpg", alt: "art" }} title="Piece" />);
     expect(screen.getByAltText("art")).toBeInTheDocument();

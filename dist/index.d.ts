@@ -27,5 +27,5 @@ export type { ButtonProps } from "./Button.js";
 export { Field, Input } from "./Field.js";
 export { Select } from "./Select.js";
 export { Card } from "./Card.js";
-export { SKIPLEAGUE_APPS, SKIPLEAGUE_ACCOUNT_URL, STATUS_DOT } from "./apps.js";
-export type { AppLink, AppLifecycleStatus } from "./apps.js";
+export { SKIPLEAGUE_APPS, SKIPLEAGUE_ACCOUNT_URL, STATUS_DOT, appLinksFrom } from "./apps.js";
+export type { AppLink, AppLifecycleStatus, PlatformApp } from "./apps.js";
