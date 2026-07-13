@@ -21,3 +21,41 @@ jobs:
         run: npm test
       - name: Storybook build
         run: npm run build-storybook
+
+  # `dist/` is COMMITTED — it is the prebuilt output consumers install (see
+  # .gitignore). So a PR that edits src/ without running `npm run build` ships a
+  # package whose dist/ does not contain the change, and nothing else catches it:
+  # the tests above run against src/, so they go green while the published package
+  # is stale.
+  #
+  # This happened for real (PR #19): appLinksFrom() was added to src/apps.ts without
+  # a rebuild, so the function did not exist in the published package at all. Any app
+  # that upgraded and imported it would have failed to build. It was only found by
+  # accident, when a later PR's rebuild produced an unexplained dist/ diff.
+  #
+  # npm ci (not npm install) so the TypeScript version comes from the lockfile and
+  # the emit is reproducible.
+  dist-is-fresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Rebuild dist/
+        run: npm run build
+      - name: dist/ must match a fresh build of src/
+        run: |
+          if ! git diff --quiet -- dist; then
+            echo "::error::dist/ is stale — it does not match a fresh build of src/."
+            echo "dist/ is committed and is what consumers install, so this would ship a"
+            echo "package missing your change. Run 'npm run build' and commit dist/."
+            echo
+            echo "Files that differ:"
+            git diff --name-only -- dist
+            echo
+            git diff --stat -- dist
+            exit 1
+          fi
+          echo "dist/ is up to date with src/."
