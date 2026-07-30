@@ -3,7 +3,7 @@ import { Input } from "@skipleague/design";
 /** A text input with a value. */
 export const Default = () => (
   <div style={{ width: 300 }}>
-    <Input defaultValue="Ben Wells" />
+    <Input defaultValue="Alex S." />
   </div>
 );
 
@@ -17,6 +17,6 @@ export const Placeholder = () => (
 /** Disabled input — muted fill and text. */
 export const Disabled = () => (
   <div style={{ width: 300 }}>
-    <Input defaultValue="ben@skipleague.com" disabled />
+    <Input defaultValue="alex@example.com" disabled />
   </div>
 );

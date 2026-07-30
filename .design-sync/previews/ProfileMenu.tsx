@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { ProfileMenu } from "@skipleague/design";
 
-const user = { displayName: "Ben Wells", email: "ben@skipleague.com" };
+const user = { displayName: "Alex S.", email: "alex@example.com" };
 const noop = () => {};
 
 /** Renders children in a dark header box and opens the menu on mount (the menu
