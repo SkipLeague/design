@@ -17,10 +17,10 @@ export const WithForm = () => (
     <Card title="Account settings">
       <div style={{ display: "grid", gap: "1rem" }}>
         <Field label="Display name">
-          <Input defaultValue="Ben Wells" />
+          <Input defaultValue="Alex S." />
         </Field>
         <Field label="Email" hint="Used for sign-in and match notifications.">
-          <Input defaultValue="ben@skipleague.com" />
+          <Input defaultValue="alex@example.com" />
         </Field>
         <div>
           <Button>Save changes</Button>

@@ -4,7 +4,7 @@ import { Field, Input, Select } from "@skipleague/design";
 export const Text = () => (
   <div style={{ width: 320 }}>
     <Field label="Display name">
-      <Input defaultValue="Ben Wells" />
+      <Input defaultValue="Alex S." />
     </Field>
   </div>
 );
@@ -13,7 +13,7 @@ export const Text = () => (
 export const WithHint = () => (
   <div style={{ width: 320 }}>
     <Field label="Email" hint="Used for sign-in and match notifications.">
-      <Input defaultValue="ben@skipleague.com" />
+      <Input defaultValue="alex@example.com" />
     </Field>
   </div>
 );
@@ -35,10 +35,10 @@ export const WithSelect = () => (
 export const Stacked = () => (
   <div style={{ width: 320, display: "grid", gap: "1rem" }}>
     <Field label="First name">
-      <Input defaultValue="Ben" />
+      <Input defaultValue="Alex" />
     </Field>
     <Field label="Last name">
-      <Input defaultValue="Wells" />
+      <Input defaultValue="S." />
     </Field>
   </div>
 );
