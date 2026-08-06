@@ -5,19 +5,19 @@ so every SkipLeague app uses one set of primitives instead of per-app copies.
 
 ## Installing in an app
 
-This is a **public repo installed directly from git** — no registry, no auth token.
-Add it to the app's `package.json` pinned to a version tag:
+Published to the public npm registry — a normal dependency, no `.npmrc` and no
+token. Add it to the app's `package.json`:
 
 ```jsonc
 // package.json
 "dependencies": {
-  "@skipleague/design": "github:SkipLeague/design#v0.3.1"
+  "@skipleague/design": "^0.14.0"
 }
 ```
 
-`npm install` clones the repo at that tag and runs its `prepare` script (builds
-`dist/`), so the package is ready to import — in local dev and in CI, with no
-`.npmrc` and no token. To pull a newer version later, bump the `#vX.Y.Z` tag.
+`dist/` is committed to this repo and is exactly what gets published — there is
+no build step on install. To pull a newer version later, bump the version
+range and reinstall, same as any npm package.
 
 ```ts
 import "@skipleague/design/tokens.css";
@@ -104,15 +104,13 @@ npm run build   # tsc → dist/
 
 ## Releasing a new version
 
-There's no registry to publish to — consumers install from git by tag. To cut a
-release, bump the version and push the tag, then point apps at the new tag:
-
-```bash
-npm version patch        # bump version + create the vX.Y.Z tag
-git push --follow-tags   # publish the tag for consumers to pin
-```
-
-`prepare` builds `dist/` automatically on every install, so `dist/` is not committed.
+See **[docs/RELEASING.md](./docs/RELEASING.md)** for the full flow and the
+one-time environment setup it depends on. In short: bump `version` in
+`package.json` and merge that to `main` like any other change, then trigger the
+**Release** workflow from the Actions tab and approve the pending deployment —
+that tag push is what fires the actual npm publish. Tagging is deliberately
+a separate, human-approved step from merging the version bump; there is no
+single action that both merges and ships.
 
 ## Roadmap
 
