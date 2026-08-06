@@ -16,3 +16,6 @@ export { Field, Input } from "./Field.js";
 export { Select } from "./Select.js";
 export { Card } from "./Card.js";
 export { SKIPLEAGUE_APPS, SKIPLEAGUE_ACCOUNT_URL, STATUS_DOT, appLinksFrom } from "./apps.js";
+export { ChoroplethMap } from "./maps/ChoroplethMap.js";
+export { WORLD_PATHS, WORLD_MAP_WIDTH, WORLD_MAP_HEIGHT } from "./maps/worldMapPaths.js";
+export { US_STATE_PATHS, US_MAP_WIDTH, US_MAP_HEIGHT } from "./maps/usStatePaths.js";

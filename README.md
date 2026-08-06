@@ -24,6 +24,47 @@ import "@skipleague/design/tokens.css";
 import { ProfileMenu, TopBar, AppLogo, ShareMenu } from "@skipleague/design";
 ```
 
+## Maps
+
+Two bundled datasets and one presentational component, for "where I've been"
+choropleths. **No tile server, no API key, and no runtime dependencies** — the
+geometry ships as plain SVG path data, so a consumer adds nothing to its
+dependency tree and the map renders offline.
+
+```tsx
+import { ChoroplethMap, WORLD_PATHS, WORLD_MAP_WIDTH, WORLD_MAP_HEIGHT } from "@skipleague/design";
+
+<ChoroplethMap
+  regions={WORLD_PATHS}                       // or US_STATE_PATHS
+  width={WORLD_MAP_WIDTH}
+  height={WORLD_MAP_HEIGHT}
+  visited={new Set(["US", "PT"])}             // ISO 3166-1 alpha-2
+  ariaLabel={(drawn, total) => `World map. ${drawn} of ${total} visited.`}
+  onSelect={setSelected}                      // omit for a static map
+  selected={selected}
+/>
+```
+
+| Dataset | Keys | Shapes |
+|---|---|---|
+| `WORLD_PATHS` | ISO 3166-1 alpha-2 (`"US"`) | 176 countries |
+| `US_STATE_PATHS` | FIPS id (`"06"`) | 50 states + DC |
+
+`US_STATE_PATHS` entries carry the full state name (`"California"`,
+`"District of Columbia"`), which is the same string SkipPlatform's subdivision
+`display_name` carries — so matching needs no crosswalk table.
+
+**The component is dataset-agnostic.** It takes regions, a visited set and a
+label; resolving *your* ids to map keys is the caller's job, because only the
+caller knows what its ids are. `ariaLabel` receives how many visited regions
+were actually drawn, so a caller holding a wider set than the map covers (every
+subdivision on a trip, say, including ones outside the US) can't announce a
+number the map visibly doesn't show.
+
+Both datasets are generated, not hand-edited. `usStatePaths.ts` is rebuilt with
+`scripts/generate-us-state-paths.mjs`; see each file's header for provenance and
+licence.
+
 ## Usage
 
 Import the tokens once at the app root, then use components anywhere:
