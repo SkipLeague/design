@@ -54,6 +54,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # tagging needs full history, not the default shallow clone
+          persist-credentials: false # otherwise checkout leaves a GITHUB_TOKEN
+          # credential-helper override in git config that outranks the PAT we
+          # set on the remote URL below, and the push silently authenticates
+          # as github-actions[bot] (read-only) instead of RELEASE_PAT.
 
       - name: Verify the version matches package.json on main
         # Refuses to tag a version nobody actually shipped in a commit. A
