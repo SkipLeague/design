@@ -1,6 +1,6 @@
 {
   "name": "@skipleague/design",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "SkipUI \u2014 the SkipLeague design system: shared tokens and React components for every SkipLeague app.",
   "type": "module",
   "repository": {

@@ -14,13 +14,24 @@ name: Release (create + push a version tag)
 #
 # Why not just let an agent `git push` the tag directly? Because that push
 # would carry the agent's own credentials with no gate at all — this workflow
-# exists specifically so the actual ref write happens from a short-lived,
-# workflow-scoped GITHUB_TOKEN, minted only after human approval, rather than
+# exists specifically so the actual ref write happens from a credential that
+# only becomes usable after a human approves this specific run, rather than
 # from a long-lived credential an agent holds. See docs/RELEASING.md.
 #
+# Why RELEASE_PAT and not the default GITHUB_TOKEN? GitHub does not fire
+# other workflows' `push` triggers for pushes made with GITHUB_TOKEN — an
+# anti-recursion protection. A GITHUB_TOKEN-pushed tag never reaches
+# publish.yml's `on: push: tags:` trigger. RELEASE_PAT is a fine-grained PAT
+# (Contents: Read and write, scoped to this repo only) stored as a secret on
+# the `release` environment — same gate as the approval itself, since
+# environment secrets are only readable inside a run of that environment.
+#
 # One-time setup (owner, in the GitHub UI — no tool can do this from outside):
-#   Settings → Environments → New environment → name it "release" →
-#   Required reviewers → add yourself. That's the entire gate.
+#   1. Settings → Environments → New environment → name it "release" →
+#      Required reviewers → add yourself.
+#   2. Create a fine-grained PAT scoped to only this repo, Contents: Read and
+#      write. Add it as an environment secret on `release` named RELEASE_PAT.
+#   Full walkthrough in docs/RELEASING.md.
 
 on:
   workflow_dispatch:
@@ -33,7 +44,7 @@ on:
         required: true
 
 permissions:
-  contents: write
+  contents: read # the tag push itself uses RELEASE_PAT, not this token
 
 jobs:
   tag:
@@ -63,12 +74,21 @@ jobs:
             exit 1
           fi
 
-      - name: Create and push the tag
-        # Pushing this tag is what triggers publish.yml. GITHUB_TOKEN is
-        # short-lived and scoped to this run only — the write it performs
-        # exists only because a required reviewer approved this specific run.
+      - name: Verify RELEASE_PAT is configured
         env:
-          GH_TOKEN: ${{ github.token }}
+          RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
+        run: |
+          if [ -z "$RELEASE_PAT" ]; then
+            echo "::error::RELEASE_PAT is not set on the 'release' environment. See docs/RELEASING.md one-time setup." >&2
+            exit 1
+          fi
+
+      - name: Create and push the tag
+        # Pushed with RELEASE_PAT, not GITHUB_TOKEN — see the file header for
+        # why. The write only happens because a required reviewer approved
+        # this specific run; RELEASE_PAT is unreadable outside it.
+        env:
+          RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -76,6 +96,7 @@ jobs:
 
           Released via the gated release workflow, approved by a required
           reviewer on the 'release' environment. Triggered by run ${{ github.run_id }}."
+          git remote set-url origin "https://x-access-token:${RELEASE_PAT}@github.com/${{ github.repository }}.git"
           git push origin "v${{ inputs.version }}"
 
       - name: Summary
