@@ -1,0 +1,86 @@
+name: Release (create + push a version tag)
+
+# The ONLY thing an agent session can do toward publishing a new version. It
+# tags and pushes; it does NOT publish. Publishing stays in publish.yml, which
+# is the one workflow npm's Trusted Publisher config trusts by filename — a
+# second workflow calling `npm publish` would not be trusted even if it tried.
+#
+# The gate: this job runs under the `release` GitHub Environment, which the
+# repo owner configures with a required reviewer (Settings → Environments →
+# release → Required reviewers). A workflow_dispatch run against a
+# reviewer-gated environment does not start until a required reviewer clicks
+# Approve in the Actions UI — there is no path from "an agent asked for a
+# release" to "npm has a new version" that skips a human clicking Approve.
+#
+# Why not just let an agent `git push` the tag directly? Because that push
+# would carry the agent's own credentials with no gate at all — this workflow
+# exists specifically so the actual ref write happens from a short-lived,
+# workflow-scoped GITHUB_TOKEN, minted only after human approval, rather than
+# from a long-lived credential an agent holds. See docs/RELEASING.md.
+#
+# One-time setup (owner, in the GitHub UI — no tool can do this from outside):
+#   Settings → Environments → New environment → name it "release" →
+#   Required reviewers → add yourself. That's the entire gate.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: >-
+          Version to release, e.g. "0.14.0" (no leading "v"). Must exactly
+          match the version already committed in package.json on main — this
+          workflow tags an existing commit, it does not bump the version.
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    environment: release # <-- the gate. No "release" environment == this job cannot start.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tagging needs full history, not the default shallow clone
+
+      - name: Verify the version matches package.json on main
+        # Refuses to tag a version nobody actually shipped in a commit. A
+        # mismatch here means the wrong ref was released, or the input was a
+        # typo — either way, fail loudly instead of tagging the wrong thing.
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$PKG_VERSION" != "${{ inputs.version }}" ]; then
+            echo "::error::Input version '${{ inputs.version }}' does not match package.json version '$PKG_VERSION' on main." >&2
+            echo "Merge the version bump to main first, then re-run this workflow." >&2
+            exit 1
+          fi
+
+      - name: Refuse to re-tag an existing release
+        run: |
+          if git rev-parse "v${{ inputs.version }}" >/dev/null 2>&1; then
+            echo "::error::Tag v${{ inputs.version }} already exists." >&2
+            exit 1
+          fi
+
+      - name: Create and push the tag
+        # Pushing this tag is what triggers publish.yml. GITHUB_TOKEN is
+        # short-lived and scoped to this run only — the write it performs
+        # exists only because a required reviewer approved this specific run.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ inputs.version }}" -m "v${{ inputs.version }}
+
+          Released via the gated release workflow, approved by a required
+          reviewer on the 'release' environment. Triggered by run ${{ github.run_id }}."
+          git push origin "v${{ inputs.version }}"
+
+      - name: Summary
+        run: |
+          echo "### Tagged v${{ inputs.version }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Pushing this tag triggers **Publish to npm** (\`publish.yml\`)." >> "$GITHUB_STEP_SUMMARY"
+          echo "Watch the Actions tab for that run to confirm the publish succeeds." >> "$GITHUB_STEP_SUMMARY"

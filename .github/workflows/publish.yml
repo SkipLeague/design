@@ -14,6 +14,9 @@ name: Publish to npm
 #        Repository:         design
 #        Workflow filename:  publish.yml
 #   After that, every `vX.Y.Z` tag push publishes automatically with no token.
+#
+# The tag itself is pushed by release.yml, a separate gated workflow — see
+# docs/RELEASING.md for why it's two stages and how to cut a release.
 
 on:
   push:
