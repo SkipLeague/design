@@ -36,11 +36,33 @@ should never be one step removed from "an agent decided this was ready."
 
 `release.yml` is the sanctioned path *around* that block, not through it:
 triggering the dispatch only *starts a request*. The tag write itself happens
-from a short-lived, workflow-scoped `GITHUB_TOKEN`, minted by GitHub only
-after a human clicks Approve — never from the agent's own credential. Widening
-the agent's credential to allow tag pushes was considered and rejected in
-favor of this: same destination, but the actual write is always downstream of
-a human's explicit click, not upstream of it.
+from a credential that only becomes usable after a human clicks Approve —
+never from the agent's own credential. Widening the agent's credential to
+allow tag pushes was considered and rejected in favor of this: same
+destination, but the actual write is always downstream of a human's explicit
+click, not upstream of it.
+
+## Why the tag push uses a stored PAT, not the default GITHUB_TOKEN
+
+The first version of this workflow pushed the tag with the default
+`GITHUB_TOKEN`, and the release silently never reached npm: GitHub does not
+fire other workflows' `push` triggers for pushes made with `GITHUB_TOKEN` (an
+anti-recursion protection, undocumented in a way that's easy to miss). The
+tag existed on GitHub, but `publish.yml`'s `on: push: tags:` trigger never
+saw it.
+
+The fix is `RELEASE_PAT` — a fine-grained Personal Access Token, scoped to
+only this repo with `Contents: Read and write` and nothing else, stored as a
+secret on the `release` **environment** (not a plain repo secret). That
+scoping matters twice over:
+- It's invisible to every workflow except one running under `release` — so it
+  inherits the exact same required-reviewer gate as the tag push itself. It
+  never becomes readable except inside a run a human already approved.
+- If it ever leaked, the blast radius is "push to this one public repo" —
+  nothing account-wide, nothing on npm directly.
+
+A push authenticated as a real identity (the PAT) fires downstream `push`
+triggers normally, which is the whole point.
 
 ## One-time setup (repo owner, in the GitHub UI — nothing here is scriptable)
 
@@ -48,8 +70,14 @@ a human's explicit click, not upstream of it.
    (the workflow's `environment:` key has to match).
 2. Under **Deployment protection rules → Required reviewers**, add yourself
    (and anyone else who should be able to approve a release).
-3. Done. `release.yml` already references this environment; no other config
-   is needed.
+3. Create a fine-grained PAT: **github.com/settings/tokens?type=beta** →
+   Generate new token → Resource owner `SkipLeague` → Repository access
+   "Only select repositories" → `design` → Permissions → Contents → **Read
+   and write** (leave everything else at no access) → Generate.
+4. Add it as an environment secret: this repo's **Settings → Environments →
+   release → Environment secrets → Add secret**, name `RELEASE_PAT`, paste
+   the token value.
+5. Done. `release.yml` already references both; no other config is needed.
 
 ## Cutting a release
 
