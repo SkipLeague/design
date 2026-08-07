@@ -64,6 +64,17 @@ scoping matters twice over:
 A push authenticated as a real identity (the PAT) fires downstream `push`
 triggers normally, which is the whole point.
 
+**A second gotcha on the way to that fix:** simply switching the tag push to
+use `RELEASE_PAT` wasn't enough on its own. `actions/checkout` (with its
+default `persist-credentials: true`) leaves a git config override
+(`http.<url>.extraheader`) carrying the default `GITHUB_TOKEN`, and that
+override outranks credentials embedded in the remote URL — so a
+`git remote set-url origin https://x-access-token:$RELEASE_PAT@...` followed
+by `git push` still silently authenticated as `github-actions[bot]` (read
+access only) and failed with a 403. The workflow's checkout step sets
+`persist-credentials: false` specifically to prevent that override from ever
+being written.
+
 ## One-time setup (repo owner, in the GitHub UI — nothing here is scriptable)
 
 1. **Settings → Environments → New environment.** Name it exactly `release`
