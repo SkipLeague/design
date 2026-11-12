@@ -46,12 +46,16 @@ const CSS = `
 
 @media (min-width: 1080px) {
   .skl-shell {
-    grid-template-columns: 236px 1fr 340px;
+    grid-template-columns: var(--skl-shell-nav-width, 236px) 1fr 340px;
     grid-template-areas: "top top top" "nav main detail";
+  }
+  /* Wide detail: the list keeps a fixed, usable width and the detail takes the rest. */
+  .skl-shell--wide-detail {
+    grid-template-columns: var(--skl-shell-nav-width, 236px) clamp(300px, 26vw, 380px) minmax(0, 1fr);
   }
   /* Views without a detail panel: drop the docked column (sidebar + content only). */
   .skl-shell--no-detail {
-    grid-template-columns: 236px 1fr;
+    grid-template-columns: var(--skl-shell-nav-width, 236px) 1fr;
     grid-template-areas: "top top" "nav main";
   }
   .skl-shell__rail { display: none; }
@@ -81,6 +85,12 @@ const CSS = `
  * Give the shell a fixed-height parent (e.g. `height: 100dvh`); it fills it and
  * scrolls internally.
  */
-export function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen = false, id, }) {
-    return (_jsxs("div", { className: `skl-shell${detail ? "" : " skl-shell--no-detail"}`, id: id, children: [_jsx("style", { children: CSS }), _jsx("div", { className: "skl-shell__top", children: topBar }), sidebar && _jsx("div", { className: "skl-shell__sidebar", children: sidebar }), rail && _jsx("div", { className: "skl-shell__rail", children: rail }), _jsx("div", { className: "skl-shell__main", children: main }), detail && _jsx("div", { className: `skl-shell__detail${detailOpen ? " is-open" : ""}`, children: detail }), bottomNav && _jsx("div", { className: "skl-shell__bottom", children: bottomNav })] }));
+export function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen = false, detailWidth = "standard", sidebarWidth, id, }) {
+    const classes = ["skl-shell"];
+    if (!detail)
+        classes.push("skl-shell--no-detail");
+    else if (detailWidth === "wide")
+        classes.push("skl-shell--wide-detail");
+    const style = sidebarWidth ? { "--skl-shell-nav-width": `${sidebarWidth}px` } : undefined;
+    return (_jsxs("div", { className: classes.join(" "), id: id, style: style, children: [_jsx("style", { children: CSS }), _jsx("div", { className: "skl-shell__top", children: topBar }), sidebar && _jsx("div", { className: "skl-shell__sidebar", children: sidebar }), rail && _jsx("div", { className: "skl-shell__rail", children: rail }), _jsx("div", { className: "skl-shell__main", children: main }), detail && _jsx("div", { className: `skl-shell__detail${detailOpen ? " is-open" : ""}`, children: detail }), bottomNav && _jsx("div", { className: "skl-shell__bottom", children: bottomNav })] }));
 }

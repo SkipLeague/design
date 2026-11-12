@@ -21,6 +21,19 @@ export interface ResponsiveShellProps {
     detail?: ReactNode;
     /** Phone/tablet overlay visibility. Ignored on desktop, where detail is always docked. */
     detailOpen?: boolean;
+    /**
+     * Desktop detail column width. `"standard"` (default) keeps the fixed 340px
+     * panel. `"wide"` gives the detail the remaining width and fixes the list
+     * column at `clamp(300px, 26vw, 380px)`, for apps whose detail is the main
+     * reading surface (e.g. a profile). Phone/tablet are unaffected.
+     */
+    detailWidth?: "standard" | "wide";
+    /**
+     * Desktop nav column width in px. Defaults to 236 (a full SidebarNav). Pass
+     * the width of a narrower desktop nav (e.g. an icon rail at 96) so no empty
+     * gutter is left beside it.
+     */
+    sidebarWidth?: number;
     /** Optional id for scoping/testing. */
     id?: string;
 }
@@ -42,4 +55,4 @@ export interface ResponsiveShellProps {
  * Give the shell a fixed-height parent (e.g. `height: 100dvh`); it fills it and
  * scrolls internally.
  */
-export declare function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen, id, }: ResponsiveShellProps): import("react").JSX.Element;
+export declare function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen, detailWidth, sidebarWidth, id, }: ResponsiveShellProps): import("react").JSX.Element;

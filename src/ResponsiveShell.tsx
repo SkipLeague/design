@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 /**
  * Class for an in-detail control that should only show while the detail panel is
@@ -23,6 +23,19 @@ export interface ResponsiveShellProps {
   detail?: ReactNode;
   /** Phone/tablet overlay visibility. Ignored on desktop, where detail is always docked. */
   detailOpen?: boolean;
+  /**
+   * Desktop detail column width. `"standard"` (default) keeps the fixed 340px
+   * panel. `"wide"` gives the detail the remaining width and fixes the list
+   * column at `clamp(300px, 26vw, 380px)`, for apps whose detail is the main
+   * reading surface (e.g. a profile). Phone/tablet are unaffected.
+   */
+  detailWidth?: "standard" | "wide";
+  /**
+   * Desktop nav column width in px. Defaults to 236 (a full SidebarNav). Pass
+   * the width of a narrower desktop nav (e.g. an icon rail at 96) so no empty
+   * gutter is left beside it.
+   */
+  sidebarWidth?: number;
   /** Optional id for scoping/testing. */
   id?: string;
 }
@@ -67,12 +80,16 @@ const CSS = `
 
 @media (min-width: 1080px) {
   .skl-shell {
-    grid-template-columns: 236px 1fr 340px;
+    grid-template-columns: var(--skl-shell-nav-width, 236px) 1fr 340px;
     grid-template-areas: "top top top" "nav main detail";
+  }
+  /* Wide detail: the list keeps a fixed, usable width and the detail takes the rest. */
+  .skl-shell--wide-detail {
+    grid-template-columns: var(--skl-shell-nav-width, 236px) clamp(300px, 26vw, 380px) minmax(0, 1fr);
   }
   /* Views without a detail panel: drop the docked column (sidebar + content only). */
   .skl-shell--no-detail {
-    grid-template-columns: 236px 1fr;
+    grid-template-columns: var(--skl-shell-nav-width, 236px) 1fr;
     grid-template-areas: "top top" "nav main";
   }
   .skl-shell__rail { display: none; }
@@ -111,10 +128,16 @@ export function ResponsiveShell({
   sidebar,
   detail,
   detailOpen = false,
+  detailWidth = "standard",
+  sidebarWidth,
   id,
 }: ResponsiveShellProps) {
+  const classes = ["skl-shell"];
+  if (!detail) classes.push("skl-shell--no-detail");
+  else if (detailWidth === "wide") classes.push("skl-shell--wide-detail");
+  const style = sidebarWidth ? ({ "--skl-shell-nav-width": `${sidebarWidth}px` } as CSSProperties) : undefined;
   return (
-    <div className={`skl-shell${detail ? "" : " skl-shell--no-detail"}`} id={id}>
+    <div className={classes.join(" ")} id={id} style={style}>
       <style>{CSS}</style>
       <div className="skl-shell__top">{topBar}</div>
       {sidebar && <div className="skl-shell__sidebar">{sidebar}</div>}
