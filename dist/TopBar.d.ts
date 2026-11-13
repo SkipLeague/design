@@ -56,7 +56,7 @@ export declare function TopBar({ app, appName, tone, actions, compact, showSearc
      * somewhere else (inside a sheet or a card).
      */
     safeArea?: boolean;
-} & Pick<ProfileMenuProps, "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn">): import("react").JSX.Element;
+} & Pick<ProfileMenuProps, "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "homeUrl" | "homeIsCurrent" | "onSignOut" | "renderLink" | "onSignIn">): import("react").JSX.Element;
 /**
  * A ghost (borderless-fill) icon button for the app bar — the named actions use
  * it, and apps pass their own for one-off `actions`. Give it a 17px line icon

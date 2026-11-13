@@ -80,7 +80,7 @@ export function TopBar({
   safeArea?: boolean;
 } & Pick<
   ProfileMenuProps,
-  "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn"
+  "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "homeUrl" | "homeIsCurrent" | "onSignOut" | "renderLink" | "onSignIn"
 >) {
   const light = tone === "light";
   const barHeight = compact ? 52 : 56;

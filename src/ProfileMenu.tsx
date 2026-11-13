@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { CircleUser, LogIn, LogOut, Settings } from "lucide-react";
+import { CircleUser, House, LogIn, LogOut, Settings } from "lucide-react";
 import { AppBadge } from "./AppBadge.js";
 import { AppLogo, appGlyphForSlug } from "./AppLogo.js";
-import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, STATUS_DOT, type AppLifecycleStatus, type AppLink } from "./apps.js";
+import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, SKIPLEAGUE_HOME_URL, STATUS_DOT, type AppLifecycleStatus, type AppLink } from "./apps.js";
 
 export interface ProfileMenuUser {
   displayName?: string | null;
@@ -38,6 +38,18 @@ export interface ProfileMenuProps {
   enabledSlugs?: string[];
   /** Target of the "Manage account" link. Defaults to the platform account page. */
   accountUrl?: string;
+  /**
+   * Target of the "SkipLeague Home" item: the platform dashboard by default
+   * (`https://skipleague.com/`). Inside the iSkip app the same URL opens the
+   * app's own Home screen. Pass `null` to hide the item. A relative URL (e.g.
+   * `"/"` on the platform apex) is rendered through `renderLink` when given.
+   */
+  homeUrl?: string | null;
+  /**
+   * Mark "SkipLeague Home" as the current page — highlighted light-green and
+   * non-clickable (the platform apex, on its dashboard).
+   */
+  homeIsCurrent?: boolean;
   /** Called when the user clicks "Sign out". */
   onSignOut: () => void;
   /**
@@ -70,7 +82,8 @@ export interface ProfileMenuProps {
 
 /**
  * The canonical SkipLeague account control: a boxed user-icon button that opens
- * a dropdown with the user's name/email, an inline **app switcher** (one click to
+ * a dropdown with the user's name/email, **SkipLeague Home** (the dashboard), an
+ * inline **app switcher** (one click to
  * jump to another SkipLeague app; the current app is highlighted and not
  * clickable), **Manage account**, and **Sign out**. Also covers the platform
  * apex via `renderLink` (SPA nav), `accountIsCurrent`, and `onSignIn`
@@ -84,6 +97,8 @@ export function ProfileMenu({
   apps = SKIPLEAGUE_APPS,
   enabledSlugs,
   accountUrl = SKIPLEAGUE_ACCOUNT_URL,
+  homeUrl = SKIPLEAGUE_HOME_URL,
+  homeIsCurrent = false,
   onSignOut,
   tone = "dark",
   renderLink,
@@ -147,6 +162,28 @@ export function ProfileMenu({
     </a>
   );
 
+  // "SkipLeague Home" (MyEcosystem D2): the way back to the dashboard from any
+  // product. A plain <a> to the apex in products (cross-origin); only a
+  // relative URL, i.e. a page inside the app rendering the menu, goes through
+  // renderLink, since renderLink is for in-app routing.
+  const homeLabel = (
+    <>
+      <House size={15} /> SkipLeague Home
+    </>
+  );
+  const homeItem =
+    homeUrl == null ? null : homeIsCurrent ? (
+      <div aria-current="page" style={{ ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }}>
+        {homeLabel}
+      </div>
+    ) : renderLink && isInAppPath(homeUrl) ? (
+      renderLink({ href: homeUrl, role: "menuitem", style: itemStyle, children: homeLabel })
+    ) : (
+      <a href={homeUrl} role="menuitem" style={itemStyle}>
+        {homeLabel}
+      </a>
+    );
+
   return (
     <div ref={ref} style={{ position: "relative", fontFamily: "var(--skl-font-sans)" }}>
       <button
@@ -200,6 +237,16 @@ export function ProfileMenu({
                 {user?.email && <div style={{ fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }}>{user.email}</div>}
               </div>
 
+              {homeItem && (
+                <>
+                  <div style={{ height: "0.25rem" }} />
+                  {homeItem}
+                  {/* The divider before "Manage account" already follows when
+                      there is no switcher; don't stack two. */}
+                  {visibleApps.length > 0 && <div style={divider} />}
+                </>
+              )}
+
               {/* Switcher only when there are apps to switch to — pass apps={[]} to
                   hide it entirely (e.g. dev mode, or a single-app deployment). */}
               {visibleApps.length > 0 && (
@@ -252,6 +299,11 @@ export function ProfileMenu({
       )}
     </div>
   );
+}
+
+/** A same-origin path like "/" or "/account" (not "//host", which is another site). */
+function isInAppPath(url: string): boolean {
+  return url.startsWith("/") && !url.startsWith("//") && !url.startsWith("/\\");
 }
 
 const menuStyle: CSSProperties = {

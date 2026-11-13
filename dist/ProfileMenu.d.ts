@@ -32,6 +32,18 @@ export interface ProfileMenuProps {
     enabledSlugs?: string[];
     /** Target of the "Manage account" link. Defaults to the platform account page. */
     accountUrl?: string;
+    /**
+     * Target of the "SkipLeague Home" item: the platform dashboard by default
+     * (`https://skipleague.com/`). Inside the iSkip app the same URL opens the
+     * app's own Home screen. Pass `null` to hide the item. A relative URL (e.g.
+     * `"/"` on the platform apex) is rendered through `renderLink` when given.
+     */
+    homeUrl?: string | null;
+    /**
+     * Mark "SkipLeague Home" as the current page — highlighted light-green and
+     * non-clickable (the platform apex, on its dashboard).
+     */
+    homeIsCurrent?: boolean;
     /** Called when the user clicks "Sign out". */
     onSignOut: () => void;
     /**
@@ -63,7 +75,8 @@ export interface ProfileMenuProps {
 }
 /**
  * The canonical SkipLeague account control: a boxed user-icon button that opens
- * a dropdown with the user's name/email, an inline **app switcher** (one click to
+ * a dropdown with the user's name/email, **SkipLeague Home** (the dashboard), an
+ * inline **app switcher** (one click to
  * jump to another SkipLeague app; the current app is highlighted and not
  * clickable), **Manage account**, and **Sign out**. Also covers the platform
  * apex via `renderLink` (SPA nav), `accountIsCurrent`, and `onSignIn`
@@ -71,4 +84,4 @@ export interface ProfileMenuProps {
  *
  * Requires `@skipleague/design/tokens.css` to be imported once at the app root.
  */
-export declare function ProfileMenu({ user, currentSlug, apps, enabledSlugs, accountUrl, onSignOut, tone, renderLink, accountIsCurrent, onSignIn, signInLabel, }: ProfileMenuProps): import("react").JSX.Element;
+export declare function ProfileMenu({ user, currentSlug, apps, enabledSlugs, accountUrl, homeUrl, homeIsCurrent, onSignOut, tone, renderLink, accountIsCurrent, onSignIn, signInLabel, }: ProfileMenuProps): import("react").JSX.Element;
