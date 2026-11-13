@@ -71,3 +71,9 @@ export interface PlatformApp {
 export declare function appLinksFrom(apps: readonly PlatformApp[] | null | undefined): AppLink[];
 /** Default target for the menu's "Manage account" link (the platform account page). */
 export declare const SKIPLEAGUE_ACCOUNT_URL = "https://skipleague.com/account";
+/**
+ * Default target for the menu's "SkipLeague Home" item: the platform dashboard.
+ * Inside the iSkip app the navigation policy answers this URL with the app's own
+ * Home screen, so the same link works in both places.
+ */
+export declare const SKIPLEAGUE_HOME_URL = "https://skipleague.com/";

@@ -31,3 +31,66 @@ describe("ProfileMenu", () => {
     expect(onSignOut).toHaveBeenCalledOnce();
   });
 });
+
+describe("ProfileMenu SkipLeague Home item", () => {
+  const open = () => fireEvent.click(screen.getByRole("button", { name: "Account" }));
+
+  it("links to the platform dashboard by default", () => {
+    render(<ProfileMenu user={user} currentSlug="skiplists" apps={apps} onSignOut={() => {}} />);
+    open();
+    const home = screen.getByRole("menuitem", { name: /skipleague home/i });
+    expect(home.tagName).toBe("A");
+    expect(home).toHaveAttribute("href", "https://skipleague.com/");
+  });
+
+  it("comes before the app switcher", () => {
+    render(<ProfileMenu user={user} currentSlug="skipracquetball" apps={apps} onSignOut={() => {}} />);
+    open();
+    const items = within(screen.getByRole("menu")).getAllByRole("menuitem").map((el) => el.textContent?.trim());
+    expect(items[0]).toBe("SkipLeague Home");
+    expect(items).toContain("SkipLists");
+    expect(items.indexOf("SkipLists")).toBeGreaterThan(0);
+  });
+
+  it("never routes the absolute apex URL through renderLink (it is another site)", () => {
+    const renderLink = vi.fn(({ href, children, ...p }) => (
+      <span data-testid={`routed:${href}`} {...p}>
+        {children}
+      </span>
+    ));
+    render(<ProfileMenu user={user} currentSlug="skiplists" apps={apps} onSignOut={() => {}} renderLink={renderLink} />);
+    open();
+    expect(screen.getByRole("menuitem", { name: /skipleague home/i }).tagName).toBe("A");
+    expect(renderLink.mock.calls.map((c) => c[0].href)).not.toContain("https://skipleague.com/");
+  });
+
+  it("routes a relative home URL through renderLink (platform apex)", () => {
+    const renderLink = vi.fn(({ href, children, ...p }) => (
+      <span data-testid={`routed:${href}`} {...p}>
+        {children}
+      </span>
+    ));
+    render(<ProfileMenu user={user} apps={apps} homeUrl="/" onSignOut={() => {}} renderLink={renderLink} />);
+    open();
+    expect(screen.getByTestId("routed:/")).toHaveTextContent("SkipLeague Home");
+  });
+
+  it("shows as the current page on the dashboard, and can be hidden", () => {
+    const { unmount } = render(<ProfileMenu user={user} apps={apps} homeIsCurrent onSignOut={() => {}} />);
+    open();
+    const current = within(screen.getByRole("menu")).getByText("SkipLeague Home");
+    expect(current.closest("[aria-current='page']")).toBeTruthy();
+    expect(screen.queryByRole("menuitem", { name: /skipleague home/i })).toBeNull();
+    unmount();
+
+    render(<ProfileMenu user={user} apps={apps} homeUrl={null} onSignOut={() => {}} />);
+    open();
+    expect(within(screen.getByRole("menu")).queryByText("SkipLeague Home")).toBeNull();
+  });
+
+  it("is not shown in the signed-out menu", () => {
+    render(<ProfileMenu apps={apps} onSignOut={() => {}} onSignIn={() => {}} />);
+    open();
+    expect(within(screen.getByRole("menu")).queryByText("SkipLeague Home")).toBeNull();
+  });
+});

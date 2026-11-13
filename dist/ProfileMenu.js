@@ -1,12 +1,13 @@
 import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
 import { useEffect, useRef, useState } from "react";
-import { CircleUser, LogIn, LogOut, Settings } from "lucide-react";
+import { CircleUser, House, LogIn, LogOut, Settings } from "lucide-react";
 import { AppBadge } from "./AppBadge.js";
 import { AppLogo, appGlyphForSlug } from "./AppLogo.js";
-import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, STATUS_DOT } from "./apps.js";
+import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, SKIPLEAGUE_HOME_URL, STATUS_DOT } from "./apps.js";
 /**
  * The canonical SkipLeague account control: a boxed user-icon button that opens
- * a dropdown with the user's name/email, an inline **app switcher** (one click to
+ * a dropdown with the user's name/email, **SkipLeague Home** (the dashboard), an
+ * inline **app switcher** (one click to
  * jump to another SkipLeague app; the current app is highlighted and not
  * clickable), **Manage account**, and **Sign out**. Also covers the platform
  * apex via `renderLink` (SPA nav), `accountIsCurrent`, and `onSignIn`
@@ -14,7 +15,7 @@ import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, STATUS_DOT } from "./apps.js";
  *
  * Requires `@skipleague/design/tokens.css` to be imported once at the app root.
  */
-export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabledSlugs, accountUrl = SKIPLEAGUE_ACCOUNT_URL, onSignOut, tone = "dark", renderLink, accountIsCurrent = false, onSignIn, signInLabel = "Sign in", }) {
+export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabledSlugs, accountUrl = SKIPLEAGUE_ACCOUNT_URL, homeUrl = SKIPLEAGUE_HOME_URL, homeIsCurrent = false, onSignOut, tone = "dark", renderLink, accountIsCurrent = false, onSignIn, signInLabel = "Sign in", }) {
     const [open, setOpen] = useState(false);
     const [hover, setHover] = useState(false);
     const ref = useRef(null);
@@ -53,6 +54,12 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabled
     const active = open || hover;
     const accountLabel = (_jsxs(_Fragment, { children: [_jsx(Settings, { size: 15 }), " Manage account"] }));
     const accountItem = accountIsCurrent ? (_jsx("div", { "aria-current": "page", style: { ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }, children: accountLabel })) : renderLink ? (renderLink({ href: accountUrl, role: "menuitem", style: itemStyle, children: accountLabel })) : (_jsx("a", { href: accountUrl, role: "menuitem", style: itemStyle, children: accountLabel }));
+    // "SkipLeague Home" (MyEcosystem D2): the way back to the dashboard from any
+    // product. A plain <a> to the apex in products (cross-origin); only a
+    // relative URL, i.e. a page inside the app rendering the menu, goes through
+    // renderLink, since renderLink is for in-app routing.
+    const homeLabel = (_jsxs(_Fragment, { children: [_jsx(House, { size: 15 }), " SkipLeague Home"] }));
+    const homeItem = homeUrl == null ? null : homeIsCurrent ? (_jsx("div", { "aria-current": "page", style: { ...itemStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }, children: homeLabel })) : renderLink && isInAppPath(homeUrl) ? (renderLink({ href: homeUrl, role: "menuitem", style: itemStyle, children: homeLabel })) : (_jsx("a", { href: homeUrl, role: "menuitem", style: itemStyle, children: homeLabel }));
     return (_jsxs("div", { ref: ref, style: { position: "relative", fontFamily: "var(--skl-font-sans)" }, children: [_jsx("button", { onClick: () => setOpen((o) => !o), onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), "aria-haspopup": "menu", "aria-expanded": open, "aria-label": "Account", title: label, style: {
                     display: "inline-flex",
                     alignItems: "center",
@@ -69,7 +76,7 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabled
                     background: boxBg,
                     color: active ? brand : idleIcon,
                     transition: "border-color 0.15s, color 0.15s",
-                }, children: _jsx(CircleUser, { size: 22 }) }), open && (_jsx("div", { role: "menu", style: menuStyle, children: showSignedOut ? (_jsxs(_Fragment, { children: [_jsx("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: _jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: "Not signed in" }) }), _jsxs("button", { role: "menuitem", onClick: onSignIn, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogIn, { size: 15 }), " ", signInLabel] })] })) : (_jsxs(_Fragment, { children: [_jsxs("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: [_jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: label }), user?.email && _jsx("div", { style: { fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }, children: user.email })] }), visibleApps.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { style: switchHeading, children: "Switch app" }), visibleApps.map((a) => {
+                }, children: _jsx(CircleUser, { size: 22 }) }), open && (_jsx("div", { role: "menu", style: menuStyle, children: showSignedOut ? (_jsxs(_Fragment, { children: [_jsx("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: _jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: "Not signed in" }) }), _jsxs("button", { role: "menuitem", onClick: onSignIn, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogIn, { size: 15 }), " ", signInLabel] })] })) : (_jsxs(_Fragment, { children: [_jsxs("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: [_jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: label }), user?.email && _jsx("div", { style: { fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }, children: user.email })] }), homeItem && (_jsxs(_Fragment, { children: [_jsx("div", { style: { height: "0.25rem" } }), homeItem, visibleApps.length > 0 && _jsx("div", { style: divider })] })), visibleApps.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { style: switchHeading, children: "Switch app" }), visibleApps.map((a) => {
                                     const isCurrent = a.slug === currentSlug;
                                     // Per-app glyph when one exists; letter badge otherwise.
                                     const glyph = appGlyphForSlug(a.slug);
@@ -82,6 +89,10 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabled
                                     // The app you're in: light-green highlight, not clickable.
                                     return isCurrent ? (_jsxs("div", { "aria-current": "page", style: { ...appRowStyle, fontWeight: 600, background: "var(--skl-color-current-bg)", color: "var(--skl-color-current-text)", cursor: "default" }, children: [inner, dot] }, a.slug)) : (_jsxs("a", { href: a.url, role: "menuitem", style: appRowStyle, children: [inner, dot] }, a.slug));
                                 })] })), _jsx("div", { style: divider }), accountItem, _jsx("div", { style: divider }), _jsxs("button", { role: "menuitem", onClick: onSignOut, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogOut, { size: 15 }), " Sign out"] })] })) }))] }));
+}
+/** A same-origin path like "/" or "/account" (not "//host", which is another site). */
+function isInAppPath(url) {
+    return url.startsWith("/") && !url.startsWith("//") && !url.startsWith("/\\");
 }
 const menuStyle = {
     position: "absolute",
