@@ -94,6 +94,33 @@ SkipToday/SkipEvolve launch), update `src/apps.ts` — every app's menu follows.
 - `Button`, `Card`, `Field`, `Input`, `Select`
 - `SKIPLEAGUE_APPS`, `SKIPLEAGUE_ACCOUNT_URL`, type `AppLink`
 - `@skipleague/design/tokens.css` — the design tokens (CSS variables)
+- `@skipleague/design/host` — what the page runs in (browser or the iSkip app) and the capabilities that differ (share, save a file, print, open a link or another product). No React, no Capacitor.
+- `@skipleague/design/session` — the SkipLeague sign-in session for a product page (capture `?token=`, the access token, renewal, sign-in redirect, sign-out). No React, no Capacitor.
+
+## Host and session (`/host`, `/session`)
+
+Two small, dependency-free entry points so product pages behave the same in a
+browser tab and inside the iSkip app (MyEcosystem ADR 0014, proposal section
+3.5). The app gives product pages no native bridge; these wrap the plain web
+APIs it makes work natively.
+
+```ts
+// main.tsx, BEFORE React renders
+import { captureTokenFromUrl, configureSession } from "@skipleague/design/session";
+if (import.meta.env.VITE_SKIPLEAGUE_URL) configureSession({ platformUrl: import.meta.env.VITE_SKIPLEAGUE_URL });
+captureTokenFromUrl(); // stores ?token= under skipplatform_token and strips it from the URL
+
+// API client
+import { getAccessToken, renew, redirectToSignIn, signOut } from "@skipleague/design/session";
+// on 401: const token = await renew(); if (!token) redirectToSignIn();
+// sign-out button: clear product caches, then signOut(); (always goes through /logout)
+
+// Capabilities: feature-detect, never version-sniff
+import { getHost } from "@skipleague/design/host";
+const host = getHost();
+if (host.has("print")) host.print(); else offerPdf(); // print is unavailable in the app
+await host.saveFile(pdfBlob, "trip.pdf");             // app: native share sheet
+```
 
 ## Build
 
