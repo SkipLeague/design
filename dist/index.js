@@ -1,5 +1,6 @@
 export { ProfileMenu } from "./ProfileMenu.js";
 export { AppBadge } from "./AppBadge.js";
+export { AppLauncher } from "./AppLauncher.js";
 export { AppLogo, APP_GLYPHS, appGlyphForSlug } from "./AppLogo.js";
 export { TopBar, TopBarIconButton, TopBarBackButton, DesktopActionBar } from "./TopBar.js";
 export { SidebarNav } from "./SidebarNav.js";
