@@ -243,3 +243,53 @@ describe("configureSession", () => {
     expect(session.getPlatformUrl()).toBe("https://skipleague.com");
   });
 });
+
+describe("Codex round 1 fixes", () => {
+  it("stops returning a token another tab removed (sign-out in a second tab)", () => {
+    session.setAccessToken("t1");
+    window.localStorage.removeItem("skipplatform_token"); // the other tab's signOut()
+    expect(session.getAccessToken()).toBeNull();
+  });
+
+  it("still uses the memory copy when reading storage throws", () => {
+    session.setAccessToken("t1");
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new DOMException("blocked", "SecurityError");
+    });
+    expect(session.getAccessToken()).toBe("t1");
+  });
+
+  it("a renewal that finishes after the session was cleared stores and returns nothing", async () => {
+    let resolve!: (r: Response) => void;
+    vi.stubGlobal("fetch", vi.fn().mockReturnValue(new Promise<Response>((r) => (resolve = r))));
+    const pending = session.renew();
+    session.clearAccessToken(); // e.g. the sign-out button, while a 401 renewal is in flight
+    resolve(new Response(JSON.stringify({ access_token: "late" }), { status: 200 }));
+    await expect(pending).resolves.toBeNull();
+    expect(session.getAccessToken()).toBeNull();
+    expect(window.localStorage.getItem("skipplatform_token")).toBeNull();
+  });
+
+  it("a renewal started after a clear does not join the stale one", async () => {
+    const first = new Promise<Response>(() => {}); // never settles
+    const fetchMock = vi
+      .fn()
+      .mockReturnValueOnce(first)
+      .mockResolvedValueOnce(new Response(JSON.stringify({ access_token: "new" }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    void session.renew();
+    session.clearAccessToken();
+    await expect(session.renew()).resolves.toBe("new");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("never rejects, even when fetch throws synchronously", async () => {
+    vi.stubGlobal("fetch", () => {
+      throw new TypeError("fetch is not a function");
+    });
+    await expect(session.renew()).resolves.toBeNull();
+    // and the slot is freed for the next attempt
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ access_token: "ok" }), { status: 200 })));
+    await expect(session.renew()).resolves.toBe("ok");
+  });
+});

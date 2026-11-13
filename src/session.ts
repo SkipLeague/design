@@ -86,6 +86,10 @@ let memToken: string | null = null;
 // it replaced.
 let memAuthoritative = false;
 
+// Bumped by clearAccessToken(). A renewal records it when it starts and drops
+// its result if the session was cleared in the meantime.
+let sessionGeneration = 0;
+
 function storage(): Storage | null {
   try {
     return typeof window !== "undefined" ? window.localStorage : null;
@@ -97,13 +101,17 @@ function storage(): Storage | null {
 /** The current access token, or `null` when there is none. */
 export function getAccessToken(): string | null {
   if (memAuthoritative) return memToken;
+  const s = storage();
+  if (!s) return memToken;
   try {
-    const stored = storage()?.getItem(SESSION_TOKEN_KEY);
-    if (stored) return stored;
+    // Storage is trusted here (every write and removal this page made was
+    // verified), so an absent key means "no token", not "storage failed":
+    // another tab of this product signed out, and this tab must stop sending
+    // the old token too. The memory copy is only for storage we cannot trust.
+    return s.getItem(SESSION_TOKEN_KEY) || null;
   } catch {
-    /* blocked: fall through to the in-memory copy */
+    return memToken; // blocked on read: fall back to the in-memory copy
   }
-  return memToken;
 }
 
 /** Store a token (normally done for you by {@link captureTokenFromUrl} and {@link renew}). */
@@ -129,6 +137,10 @@ export function setAccessToken(token: string): void {
  */
 export function clearAccessToken(): void {
   memToken = null;
+  // A renewal still in flight must not store (or hand back) a token after the
+  // session was cleared, e.g. a 401 renewal racing the sign-out button.
+  sessionGeneration++;
+  renewInFlight = null; // a renewal started after this clear must not join the stale one
   const s = storage();
   if (!s) {
     memAuthoritative = true;
@@ -189,23 +201,29 @@ let renewInFlight: Promise<string | null> | null = null;
  */
 export function renew(): Promise<string | null> {
   if (!renewInFlight) {
-    renewInFlight = (async () => {
-      try {
-        const res = await fetch(`${platformUrl}/auth/refresh`, { method: "POST", credentials: "include" });
-        if (!res.ok) return null;
-        const body: unknown = await res.json();
-        const token = body && typeof body === "object" ? (body as { access_token?: unknown }).access_token : null;
-        if (typeof token !== "string" || !token) return null;
-        setAccessToken(token);
-        return token;
-      } catch {
-        return null;
-      } finally {
-        renewInFlight = null;
-      }
-    })();
+    const attempt: Promise<string | null> = refreshOnce(sessionGeneration).finally(() => {
+      // .finally runs asynchronously, after `attempt` is assigned. Only clear
+      // the slot if a clear (and a newer renewal) has not replaced this one.
+      if (renewInFlight === attempt) renewInFlight = null;
+    });
+    renewInFlight = attempt;
   }
   return renewInFlight;
+}
+
+async function refreshOnce(generation: number): Promise<string | null> {
+  try {
+    const res = await fetch(`${platformUrl}/auth/refresh`, { method: "POST", credentials: "include" });
+    if (!res.ok) return null;
+    const body: unknown = await res.json();
+    const token = body && typeof body === "object" ? (body as { access_token?: unknown }).access_token : null;
+    if (typeof token !== "string" || !token) return null;
+    if (generation !== sessionGeneration) return null; // the session was cleared while in flight
+    setAccessToken(token);
+    return token;
+  } catch {
+    return null;
+  }
 }
 
 // --- Leaving the page ------------------------------------------------------
