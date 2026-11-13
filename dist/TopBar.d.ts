@@ -23,8 +23,14 @@ export type TopBarTone = "dark" | "light";
  *   more {@link TopBarIconButton}s. They sit between the named cluster and the
  *   ProfileMenu.
  * - The app name appears ONLY here, never repeated in the sidebar.
+ * - Safe areas: the bar pads itself by `env(safe-area-inset-top)` and the left
+ *   and right insets, so under `viewport-fit=cover` (the iSkip app, and a
+ *   home-screen web app with `black-translucent`) its content clears the status
+ *   bar and the notch while its background still fills behind them. Without
+ *   `viewport-fit=cover` the insets are 0 and nothing changes. Pass
+ *   `safeArea={false}` when the bar is not at the top edge of the screen.
  */
-export declare function TopBar({ app, appName, tone, actions, compact, showSearch, showInbox, showMembers, showShare, showOverflow, onSearch, onInbox, onMembers, onShare, onOverflow, ...profile }: {
+export declare function TopBar({ app, appName, tone, actions, compact, showSearch, showInbox, showMembers, showShare, showOverflow, onSearch, onInbox, onMembers, onShare, onOverflow, safeArea, ...profile }: {
     app: AppGlyph;
     appName: string;
     /** Bar surface tone. `dark` (green header) is the default. */
@@ -44,6 +50,12 @@ export declare function TopBar({ app, appName, tone, actions, compact, showSearc
     onMembers?: () => void;
     onShare?: () => void;
     onOverflow?: () => void;
+    /**
+     * Pad for the device safe areas (top, left, right). Default `true`: the bar
+     * normally sits at the top edge of the screen. Set `false` for a bar rendered
+     * somewhere else (inside a sheet or a card).
+     */
+    safeArea?: boolean;
 } & Pick<ProfileMenuProps, "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn">): import("react").JSX.Element;
 /**
  * A ghost (borderless-fill) icon button for the app bar — the named actions use

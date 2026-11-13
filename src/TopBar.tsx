@@ -27,6 +27,12 @@ export type TopBarTone = "dark" | "light";
  *   more {@link TopBarIconButton}s. They sit between the named cluster and the
  *   ProfileMenu.
  * - The app name appears ONLY here, never repeated in the sidebar.
+ * - Safe areas: the bar pads itself by `env(safe-area-inset-top)` and the left
+ *   and right insets, so under `viewport-fit=cover` (the iSkip app, and a
+ *   home-screen web app with `black-translucent`) its content clears the status
+ *   bar and the notch while its background still fills behind them. Without
+ *   `viewport-fit=cover` the insets are 0 and nothing changes. Pass
+ *   `safeArea={false}` when the bar is not at the top edge of the screen.
  */
 export function TopBar({
   app,
@@ -44,6 +50,7 @@ export function TopBar({
   onMembers,
   onShare,
   onOverflow,
+  safeArea = true,
   ...profile
 }: {
   app: AppGlyph;
@@ -65,17 +72,37 @@ export function TopBar({
   onMembers?: () => void;
   onShare?: () => void;
   onOverflow?: () => void;
+  /**
+   * Pad for the device safe areas (top, left, right). Default `true`: the bar
+   * normally sits at the top edge of the screen. Set `false` for a bar rendered
+   * somewhere else (inside a sheet or a card).
+   */
+  safeArea?: boolean;
 } & Pick<
   ProfileMenuProps,
   "user" | "currentSlug" | "apps" | "enabledSlugs" | "accountUrl" | "onSignOut" | "renderLink" | "onSignIn"
 >) {
   const light = tone === "light";
+  const barHeight = compact ? 52 : 56;
+  const sidePad = compact ? 12 : 16;
   const bar: CSSProperties = {
     display: "flex",
     alignItems: "center",
     gap: 12,
-    height: compact ? 52 : 56,
-    padding: compact ? "0 12px" : "0 16px",
+    // border-box so the top inset is added to the bar, not taken out of its
+    // 52/56px content row, whatever box-sizing the host app sets globally.
+    boxSizing: "border-box",
+    ...(safeArea
+      ? {
+          // Phase 0 measured a 62px top inset in the iSkip app: without this the
+          // logo and ProfileMenu sit under the status bar.
+          height: `calc(${barHeight}px + env(safe-area-inset-top, 0px))`,
+          paddingTop: "env(safe-area-inset-top, 0px)",
+          paddingRight: `calc(${sidePad}px + env(safe-area-inset-right, 0px))`,
+          paddingBottom: 0,
+          paddingLeft: `calc(${sidePad}px + env(safe-area-inset-left, 0px))`,
+        }
+      : { height: barHeight, padding: `0 ${sidePad}px` }),
     background: light ? "#ffffff" : "var(--skl-color-header-dark)",
     borderBottom: light ? "1px solid var(--skl-color-border)" : undefined,
     fontFamily: "var(--skl-font-sans)",
