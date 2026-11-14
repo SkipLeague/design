@@ -1,8 +1,9 @@
 # SkipLeague parent brand
 
 The SkipLeague parent logo is the approved **SL monogram tile**: a bold, italic
-white `S` and bright cyan `L` on a rounded deep teal tile with layered teal and
-green waves, the brightest green sweeping across the lower right.
+white `S` and a shorter, bright cyan `L` set low beside it, on a rounded deep
+teal tile with a teal wave rising on the right and the brightest green sweeping
+across the lower right.
 
 It was approved on 2026-11-13 (the second of the three final candidates) and is
 **visually locked**. This repository is its one authoritative home. Do not
@@ -30,7 +31,7 @@ generated from it by `scripts/generate-brand-assets.mjs`.
 
 | File | Size | Background | Use |
 | --- | --- | --- | --- |
-| `source/skipleague-logo-approved-original.png` | 1254 x 1254 | off-white canvas, no alpha | The approved image exactly as received (sha256 `d872ceda…a98a19`). Never edited. Not shipped in the npm package. |
+| `source/skipleague-logo-approved.png` | 647 x 647 | off-white canvas, no alpha | The approved clean export exactly as received (sha256 `506c0512…f571ba`). Never edited. Not shipped in the npm package. |
 | `png/skipleague-logo-1024.png` | 1024 x 1024 | transparent outside the tile | High-resolution master for web and print-style use |
 | `png/skipleague-logo-{512,256,128,64}.png` | as named | transparent | Web logos (hero, header, cards) |
 | `icons/favicon.ico` | 16, 32, 48 | transparent | Browser favicon |
@@ -46,14 +47,18 @@ From the npm package they resolve as
 ### What generation does (and does not do) to the artwork
 
 1. Finds the tile on the source canvas and makes the canvas transparent. The
-   faint shadow baked under the tile in the source goes with the canvas (a
-   transparent logo must not carry its own shadow). The anti-aliased edge keeps
-   real partial transparency with the canvas white removed, so there is no
-   white fringe on dark pages.
-2. Crops to the tile and pads it to an exact square (the tile is 1105 x 1107),
+   anti-aliased edge keeps real partial transparency with the canvas white
+   removed, so there is no white fringe on dark pages.
+2. Crops to the tile and pads it to an exact square (the tile is 598 x 593),
    so every resize is uniform and the monogram is never stretched.
-3. Downscales only. Every output is at most 1024px from a ~1107px master; nothing
-   is upscaled.
+3. Resizes with Lanczos. Everything up to 512px is a downscale. The two 1024px
+   files (`png/skipleague-logo-1024.png` and `icons/ios-app-icon-1024.png`) are
+   a ~1.7x **upscale**, because the approved source tile is only ~598px; they
+   are slightly soft at the letter edges when viewed at full size. On an
+   iPhone home screen (180px at most) this does not show; it would show on the
+   App Store's large icon. A higher-resolution export of this same artwork can
+   replace the source with no other change (see
+   [Updating the logo](#updating-the-logo)).
 4. For the two **opaque full-bleed** icons only: the pixels outside the tile's
    own rounded corners are filled by continuing the neighbouring artwork colour
    outward. iOS applies its own rounded mask to app icons; its curve is a
@@ -69,9 +74,12 @@ spacing.
 
 There is deliberately **no SVG**. The artwork is a raster illustration with
 soft gradients, glows and a shadow behind the letters; a faithful vector
-version cannot be traced from it, and an SVG that just wraps the PNG would be a
-fake vector. The 1024px PNG is the master. A true vector needs a designer to
-redraw the artwork as vectors and a fresh approval.
+version cannot be traced from it. The `SkipLeague_Approved_Logo_Clean.svg`
+supplied with the approval is not a vector either: it is a single `<image>`
+element wrapping the same 647px PNG byte for byte, so it is not stored here
+(it would be a fake vector and a duplicate). The source PNG is the master. A
+true vector needs a designer to redraw the artwork as vectors and a fresh
+approval.
 
 ## Using it in React
 
@@ -125,11 +133,11 @@ not added to `tokens.css`; the artwork itself is the source of truth.
 | Element | Approx. hex |
 | --- | --- |
 | `S` | `#FFFFFF` |
-| `L` | `#04F4EE` |
-| Deep teal behind the letters | `#014B4E` |
-| Mid teal | `#018C90` |
-| Upper-left green | `#21B879` |
-| Bright lower wave | `#4EDD74` |
+| `L` | `#03F4FE` |
+| Deep teal behind the letters | `#013239` |
+| Tile, upper left | `#017672` |
+| Teal wave, right | `#018897` |
+| Bright lower wave | `#25CB85` |
 
 ## Do not
 
@@ -147,7 +155,7 @@ not added to `tokens.css`; the artwork itself is the source of truth.
 
 1. A replacement is approved by Ben as a new image, never by editing the
    existing files.
-2. Replace `source/skipleague-logo-approved-original.png` with it and update
+2. Replace `source/skipleague-logo-approved.png` with it and update
    `SOURCE_SHA256` in `scripts/generate-brand-assets.mjs` and the checksum in
    `test/skipLeagueLogo.test.tsx` (the script and test refuse to run on an
    unexpected source, so a silent swap fails loudly).
