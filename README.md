@@ -91,6 +91,8 @@ SkipToday/SkipEvolve launch), update `src/apps.ts` — every app's menu follows.
 ## Exports
 
 - `ProfileMenu`, `AppBadge`, `AppLogo`, `TopBar`, `TopBarIconButton`, `TopBarBackButton`, `ShareMenu`
+- `SkipLeagueLogo` — the SkipLeague parent-brand logo (the approved SL monogram tile). Product glyphs stay `AppLogo`. See **[docs/BRANDING.md](./docs/BRANDING.md)** for usage rules, sizes and the asset files.
+- `@skipleague/design/brand/skipleague/<png|icons>/<file>` — the parent-logo PNGs, favicons, manifest icons and the iOS app-icon source.
 - `Button`, `Card`, `Field`, `Input`, `Select`
 - `SKIPLEAGUE_APPS`, `SKIPLEAGUE_ACCOUNT_URL`, type `AppLink`
 - `@skipleague/design/tokens.css` — the design tokens (CSS variables)

@@ -5,6 +5,8 @@ export { AppLauncher } from "./AppLauncher.js";
 export type { AppLauncherProps, AppLauncherApp } from "./AppLauncher.js";
 export { AppLogo, APP_GLYPHS, appGlyphForSlug } from "./AppLogo.js";
 export type { AppGlyph } from "./AppLogo.js";
+export { SkipLeagueLogo } from "./SkipLeagueLogo.js";
+export type { SkipLeagueLogoProps } from "./SkipLeagueLogo.js";
 export { TopBar, TopBarIconButton, TopBarBackButton, DesktopActionBar } from "./TopBar.js";
 export type { TopBarTone } from "./TopBar.js";
 export { SidebarNav } from "./SidebarNav.js";
