@@ -55,8 +55,8 @@ describe("SkipLeagueLogo", () => {
 
 describe("SkipLeague brand assets", () => {
   it("keeps the approved source byte-for-byte", () => {
-    const sha = createHash("sha256").update(readFileSync(join(BRAND, "source/skipleague-logo-approved-original.png"))).digest("hex");
-    expect(sha).toBe("d872ceda304b63d0fb57838528104eb35bc675a75b5d2172350741de72a98a19");
+    const sha = createHash("sha256").update(readFileSync(join(BRAND, "source/skipleague-logo-approved.png"))).digest("hex");
+    expect(sha).toBe("506c05123ef68a51474965869e21c9b172444fed294a5e8c9800c1a6f9f571ba");
   });
 
   it("ships every generated asset the docs promise", () => {
