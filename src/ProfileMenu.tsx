@@ -208,8 +208,14 @@ export function ProfileMenu({
           // otherwise collapse this fixed-size box's content area (border-box)
           // and shrink the icon to a dot.
           padding: 0,
+          // Exact square, locked against a host app's global min-height /
+          // min-width button rules (they made it 34x40 on SkipLists phones).
           width: size,
           height: size,
+          minWidth: size,
+          minHeight: size,
+          maxHeight: size,
+          boxSizing: "border-box",
           borderRadius: "var(--skl-radius-control)",
           cursor: "pointer",
           border: `1px solid ${active ? brand : idleBorder}`,

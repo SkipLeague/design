@@ -186,8 +186,15 @@ export function TopBarIconButton({ tone = "dark", compact = false, style, childr
             color: hover ? "var(--skl-color-brand-bright)" : "var(--skl-color-on-dark-muted)",
         };
     return (_jsx("button", { type: "button", onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), style: {
+            // Exact square, locked: min/max too, so a host app's global button
+            // rules (e.g. SkipLists' phone-only `button { min-height: 40px }`)
+            // can't stretch it into a rectangle. Inline styles beat those rules.
             width: dim,
             height: dim,
+            minWidth: dim,
+            minHeight: dim,
+            maxHeight: dim,
+            boxSizing: "border-box",
             borderRadius: 9,
             display: "inline-flex",
             alignItems: "center",
