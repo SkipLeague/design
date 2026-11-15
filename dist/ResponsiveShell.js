@@ -18,7 +18,7 @@ const CSS = `
   background: var(--skl-color-app-bg, #f8fafc);
   font-family: var(--skl-font-sans);
 }
-.skl-shell__top { flex: 0 0 auto; }
+.skl-shell__top { flex: 0 0 auto; position: sticky; top: 0; z-index: 30; }
 .skl-shell__main { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .skl-shell__bottom { flex: 0 0 auto; }
 .skl-shell__rail, .skl-shell__sidebar { display: none; }
@@ -85,12 +85,12 @@ const CSS = `
  * Give the shell a fixed-height parent (e.g. `height: 100dvh`); it fills it and
  * scrolls internally.
  */
-export function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen = false, detailWidth = "standard", sidebarWidth, id, }) {
+export function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen = false, detailWidth = "standard", sidebarWidth, id, mainRef, }) {
     const classes = ["skl-shell"];
     if (!detail)
         classes.push("skl-shell--no-detail");
     else if (detailWidth === "wide")
         classes.push("skl-shell--wide-detail");
     const style = sidebarWidth ? { "--skl-shell-nav-width": `${sidebarWidth}px` } : undefined;
-    return (_jsxs("div", { className: classes.join(" "), id: id, style: style, children: [_jsx("style", { children: CSS }), _jsx("div", { className: "skl-shell__top", children: topBar }), sidebar && _jsx("div", { className: "skl-shell__sidebar", children: sidebar }), rail && _jsx("div", { className: "skl-shell__rail", children: rail }), _jsx("div", { className: "skl-shell__main", children: main }), detail && _jsx("div", { className: `skl-shell__detail${detailOpen ? " is-open" : ""}`, children: detail }), bottomNav && _jsx("div", { className: "skl-shell__bottom", children: bottomNav })] }));
+    return (_jsxs("div", { className: classes.join(" "), id: id, style: style, children: [_jsx("style", { children: CSS }), _jsx("div", { className: "skl-shell__top", children: topBar }), sidebar && _jsx("div", { className: "skl-shell__sidebar", children: sidebar }), rail && _jsx("div", { className: "skl-shell__rail", children: rail }), _jsx("div", { className: "skl-shell__main", ref: mainRef, children: main }), detail && _jsx("div", { className: `skl-shell__detail${detailOpen ? " is-open" : ""}`, children: detail }), bottomNav && _jsx("div", { className: "skl-shell__bottom", children: bottomNav })] }));
 }

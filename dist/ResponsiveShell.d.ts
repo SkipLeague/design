@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 /**
  * Class for an in-detail control that should only show while the detail panel is
  * a phone/tablet overlay (e.g. its back button) — hidden once the panel is
@@ -36,6 +36,12 @@ export interface ResponsiveShellProps {
     sidebarWidth?: number;
     /** Optional id for scoping/testing. */
     id?: string;
+    /**
+     * Ref to the scrolling content region. Pass the same ref to the top bar's
+     * `scrollContainer` so its scroll shadow follows this pane (the shell scrolls
+     * internally; the window never does).
+     */
+    mainRef?: Ref<HTMLDivElement>;
 }
 /**
  * The SkipLeague adaptive app shell (design_handoff_responsive_shell).
@@ -55,4 +61,4 @@ export interface ResponsiveShellProps {
  * Give the shell a fixed-height parent (e.g. `height: 100dvh`); it fills it and
  * scrolls internally.
  */
-export declare function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen, detailWidth, sidebarWidth, id, }: ResponsiveShellProps): import("react").JSX.Element;
+export declare function ResponsiveShell({ topBar, main, bottomNav, rail, sidebar, detail, detailOpen, detailWidth, sidebarWidth, id, mainRef, }: ResponsiveShellProps): import("react").JSX.Element;
