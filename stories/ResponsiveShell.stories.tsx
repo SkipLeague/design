@@ -8,7 +8,7 @@ import { SidebarNav } from "../src/SidebarNav";
 // Mock chrome/content so the shell has something to reflow. Resize the Storybook
 // canvas across 720px and 1080px to see phone → tablet → desktop.
 const TopBarMock = () => (
-  <div style={{ height: 52, background: "#0e2e2a", color: "#eafaf6", display: "flex", alignItems: "center", padding: "0 16px", fontFamily: "var(--skl-font-sans)", fontWeight: 700 }}>
+  <div style={{ height: 48, background: "#0e2e2a", color: "#eafaf6", display: "flex", alignItems: "center", padding: "0 16px", fontFamily: "var(--skl-font-sans)", fontWeight: 700 }}>
     SkipRacquetball
   </div>
 );

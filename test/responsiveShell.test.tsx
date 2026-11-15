@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 
@@ -59,5 +60,16 @@ describe("ResponsiveShell", () => {
   it("leaves the nav width to the stylesheet default when not given", () => {
     const { container } = render(<ResponsiveShell topBar={<div />} main={<div />} />);
     expect((container.querySelector(".skl-shell") as HTMLElement).getAttribute("style")).toBeNull();
+  });
+
+  it("hands the scrolling content region to mainRef (for the top bar's scroll shadow)", () => {
+    const ref = createRef<HTMLDivElement>();
+    const { container } = render(<ResponsiveShell topBar={<div />} main={<div>MAIN</div>} mainRef={ref} />);
+    expect(ref.current).toBe(container.querySelector(".skl-shell__main"));
+  });
+
+  it("pins the top slot so Safari can tint its toolbar from it", () => {
+    const { container } = render(<ResponsiveShell topBar={<div />} main={<div />} />);
+    expect(container.querySelector("style")?.textContent).toMatch(/\.skl-shell__top \{[^}]*position: sticky/);
   });
 });

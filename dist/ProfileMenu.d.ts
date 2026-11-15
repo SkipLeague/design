@@ -72,6 +72,11 @@ export interface ProfileMenuProps {
     onSignIn?: () => void;
     /** Label for the signed-out action (default "Sign in"). */
     signInLabel?: string;
+    /**
+     * Trigger button size in px (default 38). TopBar passes 34 so the account
+     * button matches its 34px action buttons.
+     */
+    size?: number;
 }
 /**
  * The canonical SkipLeague account control: a boxed user-icon button that opens
@@ -84,4 +89,4 @@ export interface ProfileMenuProps {
  *
  * Requires `@skipleague/design/tokens.css` to be imported once at the app root.
  */
-export declare function ProfileMenu({ user, currentSlug, apps, enabledSlugs, accountUrl, homeUrl, homeIsCurrent, onSignOut, tone, renderLink, accountIsCurrent, onSignIn, signInLabel, }: ProfileMenuProps): import("react").JSX.Element;
+export declare function ProfileMenu({ user, currentSlug, apps, enabledSlugs, accountUrl, homeUrl, homeIsCurrent, onSignOut, tone, renderLink, accountIsCurrent, onSignIn, signInLabel, size, }: ProfileMenuProps): import("react").JSX.Element;

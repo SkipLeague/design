@@ -11,7 +11,7 @@ token. Add it to the app's `package.json`:
 ```jsonc
 // package.json
 "dependencies": {
-  "@skipleague/design": "^0.14.0"
+  "@skipleague/design": "^0.18.0"
 }
 ```
 
@@ -90,7 +90,7 @@ SkipToday/SkipEvolve launch), update `src/apps.ts` — every app's menu follows.
 
 ## Exports
 
-- `ProfileMenu`, `AppBadge`, `AppLogo`, `TopBar`, `TopBarIconButton`, `TopBarBackButton`, `ShareMenu`
+- `ProfileMenu`, `AppBadge`, `AppLogo`, `TopBar`, `TopBarDetail`, `TopBarWordmark`, `TopBarIconButton`, `TopBarBackButton`, `useScrolledPast`, `ShareMenu`
 - `SkipLeagueLogo` — the SkipLeague parent-brand logo (the approved SL monogram tile). Product glyphs stay `AppLogo`. See **[docs/BRANDING.md](./docs/BRANDING.md)** for usage rules, sizes and the asset files.
 - `@skipleague/design/brand/skipleague/<png|icons>/<file>` — the parent-logo PNGs, favicons, manifest icons and the iOS app-icon source.
 - `Button`, `Card`, `Field`, `Input`, `Select`

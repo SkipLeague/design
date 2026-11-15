@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
 
 /**
  * Class for an in-detail control that should only show while the detail panel is
@@ -38,6 +38,12 @@ export interface ResponsiveShellProps {
   sidebarWidth?: number;
   /** Optional id for scoping/testing. */
   id?: string;
+  /**
+   * Ref to the scrolling content region. Pass the same ref to the top bar's
+   * `scrollContainer` so its scroll shadow follows this pane (the shell scrolls
+   * internally; the window never does).
+   */
+  mainRef?: Ref<HTMLDivElement>;
 }
 
 // Breakpoints: phone < 720 ≤ tablet < 1080 ≤ desktop. One list-detail layout that
@@ -52,7 +58,7 @@ const CSS = `
   background: var(--skl-color-app-bg, #f8fafc);
   font-family: var(--skl-font-sans);
 }
-.skl-shell__top { flex: 0 0 auto; }
+.skl-shell__top { flex: 0 0 auto; position: sticky; top: 0; z-index: 30; }
 .skl-shell__main { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .skl-shell__bottom { flex: 0 0 auto; }
 .skl-shell__rail, .skl-shell__sidebar { display: none; }
@@ -131,6 +137,7 @@ export function ResponsiveShell({
   detailWidth = "standard",
   sidebarWidth,
   id,
+  mainRef,
 }: ResponsiveShellProps) {
   const classes = ["skl-shell"];
   if (!detail) classes.push("skl-shell--no-detail");
@@ -142,7 +149,7 @@ export function ResponsiveShell({
       <div className="skl-shell__top">{topBar}</div>
       {sidebar && <div className="skl-shell__sidebar">{sidebar}</div>}
       {rail && <div className="skl-shell__rail">{rail}</div>}
-      <div className="skl-shell__main">{main}</div>
+      <div className="skl-shell__main" ref={mainRef}>{main}</div>
       {detail && <div className={`skl-shell__detail${detailOpen ? " is-open" : ""}`}>{detail}</div>}
       {bottomNav && <div className="skl-shell__bottom">{bottomNav}</div>}
     </div>

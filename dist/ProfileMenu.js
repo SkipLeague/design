@@ -15,7 +15,7 @@ import { SKIPLEAGUE_ACCOUNT_URL, SKIPLEAGUE_APPS, SKIPLEAGUE_HOME_URL, STATUS_DO
  *
  * Requires `@skipleague/design/tokens.css` to be imported once at the app root.
  */
-export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabledSlugs, accountUrl = SKIPLEAGUE_ACCOUNT_URL, homeUrl = SKIPLEAGUE_HOME_URL, homeIsCurrent = false, onSignOut, tone = "dark", renderLink, accountIsCurrent = false, onSignIn, signInLabel = "Sign in", }) {
+export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabledSlugs, accountUrl = SKIPLEAGUE_ACCOUNT_URL, homeUrl = SKIPLEAGUE_HOME_URL, homeIsCurrent = false, onSignOut, tone = "dark", renderLink, accountIsCurrent = false, onSignIn, signInLabel = "Sign in", size = 38, }) {
     const [open, setOpen] = useState(false);
     const [hover, setHover] = useState(false);
     const ref = useRef(null);
@@ -65,18 +65,18 @@ export function ProfileMenu({ user, currentSlug, apps = SKIPLEAGUE_APPS, enabled
                     alignItems: "center",
                     justifyContent: "center",
                     // Explicit padding:0 — a host app's global `button { padding }` would
-                    // otherwise collapse this fixed 38×38 box's content area (border-box)
+                    // otherwise collapse this fixed-size box's content area (border-box)
                     // and shrink the icon to a dot.
                     padding: 0,
-                    width: 38,
-                    height: 38,
+                    width: size,
+                    height: size,
                     borderRadius: "var(--skl-radius-control)",
                     cursor: "pointer",
                     border: `1px solid ${active ? brand : idleBorder}`,
                     background: boxBg,
                     color: active ? brand : idleIcon,
                     transition: "border-color 0.15s, color 0.15s",
-                }, children: _jsx(CircleUser, { size: 22 }) }), open && (_jsx("div", { role: "menu", style: menuStyle, children: showSignedOut ? (_jsxs(_Fragment, { children: [_jsx("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: _jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: "Not signed in" }) }), _jsxs("button", { role: "menuitem", onClick: onSignIn, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogIn, { size: 15 }), " ", signInLabel] })] })) : (_jsxs(_Fragment, { children: [_jsxs("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: [_jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: label }), user?.email && _jsx("div", { style: { fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }, children: user.email })] }), homeItem && (_jsxs(_Fragment, { children: [_jsx("div", { style: { height: "0.25rem" } }), homeItem, visibleApps.length > 0 && _jsx("div", { style: divider })] })), visibleApps.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { style: switchHeading, children: "Switch app" }), visibleApps.map((a) => {
+                }, children: _jsx(CircleUser, { size: Math.round(size * 0.58) }) }), open && (_jsx("div", { role: "menu", style: menuStyle, children: showSignedOut ? (_jsxs(_Fragment, { children: [_jsx("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: _jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: "Not signed in" }) }), _jsxs("button", { role: "menuitem", onClick: onSignIn, style: { ...itemStyle, width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer" }, children: [_jsx(LogIn, { size: 15 }), " ", signInLabel] })] })) : (_jsxs(_Fragment, { children: [_jsxs("div", { style: { padding: "0.5rem 0.75rem", borderBottom: "1px solid var(--skl-color-border)" }, children: [_jsx("div", { style: { fontWeight: 600, fontSize: "var(--skl-text-sm)", color: "var(--skl-color-text)" }, children: label }), user?.email && _jsx("div", { style: { fontSize: "var(--skl-text-xs)", color: "var(--skl-color-text-muted)" }, children: user.email })] }), homeItem && (_jsxs(_Fragment, { children: [_jsx("div", { style: { height: "0.25rem" } }), homeItem, visibleApps.length > 0 && _jsx("div", { style: divider })] })), visibleApps.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { style: switchHeading, children: "Switch app" }), visibleApps.map((a) => {
                                     const isCurrent = a.slug === currentSlug;
                                     // Per-app glyph when one exists; letter badge otherwise.
                                     const glyph = appGlyphForSlug(a.slug);
