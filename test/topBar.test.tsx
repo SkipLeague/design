@@ -142,3 +142,23 @@ describe("TopBarDetail", () => {
     expect(screen.queryByText("Lists")).toBeNull();
   });
 });
+
+describe("TopBar buttons stay square", () => {
+  it("lock width and height with min/max, so a host's global button rules can't stretch them", () => {
+    // SkipLists ships `@media (max-width: 720px) { button { min-height: 40px } }`;
+    // an inline min-height/max-height equal to the size beats it.
+    const html = renderToStaticMarkup(
+      <TopBar app="lists" appName="SkipLists" showSearch onSignOut={() => {}} />,
+    );
+    const buttons = html.match(/<button[^>]*style="[^"]*"/g) ?? [];
+    expect(buttons.length).toBeGreaterThanOrEqual(2); // Search + Account
+    for (const b of buttons) {
+      expect(b).toContain("width:34px");
+      expect(b).toContain("height:34px");
+      expect(b).toContain("min-height:34px");
+      expect(b).toContain("max-height:34px");
+      expect(b).toContain("min-width:34px");
+    }
+  });
+});
+
