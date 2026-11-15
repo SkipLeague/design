@@ -3,7 +3,7 @@ export { AppBadge } from "./AppBadge.js";
 export { AppLauncher } from "./AppLauncher.js";
 export { AppLogo, APP_GLYPHS, appGlyphForSlug } from "./AppLogo.js";
 export { SkipLeagueLogo } from "./SkipLeagueLogo.js";
-export { TopBar, TopBarIconButton, TopBarBackButton, DesktopActionBar } from "./TopBar.js";
+export { TopBar, TopBarDetail, TopBarWordmark, TopBarIconButton, TopBarBackButton, DesktopActionBar, useScrolledPast, TOP_BAR_HEIGHT, TOP_BAR_SIDE_PADDING, } from "./TopBar.js";
 export { SidebarNav } from "./SidebarNav.js";
 export { IconRail } from "./IconRail.js";
 export { ResponsiveShell, RESPONSIVE_SHELL_DETAIL_BACK_CLASS } from "./ResponsiveShell.js";

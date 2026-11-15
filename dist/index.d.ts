@@ -7,7 +7,7 @@ export { AppLogo, APP_GLYPHS, appGlyphForSlug } from "./AppLogo.js";
 export type { AppGlyph } from "./AppLogo.js";
 export { SkipLeagueLogo } from "./SkipLeagueLogo.js";
 export type { SkipLeagueLogoProps } from "./SkipLeagueLogo.js";
-export { TopBar, TopBarIconButton, TopBarBackButton, DesktopActionBar } from "./TopBar.js";
+export { TopBar, TopBarDetail, TopBarWordmark, TopBarIconButton, TopBarBackButton, DesktopActionBar, useScrolledPast, TOP_BAR_HEIGHT, TOP_BAR_SIDE_PADDING, } from "./TopBar.js";
 export type { TopBarTone } from "./TopBar.js";
 export { SidebarNav } from "./SidebarNav.js";
 export type { SidebarNavProps, SidebarNavSection, SidebarNavItem, SidebarNavLinkArgs } from "./SidebarNav.js";

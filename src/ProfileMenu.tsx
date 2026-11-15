@@ -78,6 +78,11 @@ export interface ProfileMenuProps {
   onSignIn?: () => void;
   /** Label for the signed-out action (default "Sign in"). */
   signInLabel?: string;
+  /**
+   * Trigger button size in px (default 38). TopBar passes 34 so the account
+   * button matches its 34px action buttons.
+   */
+  size?: number;
 }
 
 /**
@@ -105,6 +110,7 @@ export function ProfileMenu({
   accountIsCurrent = false,
   onSignIn,
   signInLabel = "Sign in",
+  size = 38,
 }: ProfileMenuProps) {
   const [open, setOpen] = useState(false);
   const [hover, setHover] = useState(false);
@@ -199,11 +205,11 @@ export function ProfileMenu({
           alignItems: "center",
           justifyContent: "center",
           // Explicit padding:0 — a host app's global `button { padding }` would
-          // otherwise collapse this fixed 38×38 box's content area (border-box)
+          // otherwise collapse this fixed-size box's content area (border-box)
           // and shrink the icon to a dot.
           padding: 0,
-          width: 38,
-          height: 38,
+          width: size,
+          height: size,
           borderRadius: "var(--skl-radius-control)",
           cursor: "pointer",
           border: `1px solid ${active ? brand : idleBorder}`,
@@ -212,7 +218,7 @@ export function ProfileMenu({
           transition: "border-color 0.15s, color 0.15s",
         }}
       >
-        <CircleUser size={22} />
+        <CircleUser size={Math.round(size * 0.58)} />
       </button>
 
       {open && (
