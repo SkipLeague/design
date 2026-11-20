@@ -21,7 +21,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
  *   down to make room.
  */
 const ICON = 24; // tab icon box (24px line icons, stroke 2)
-const LABEL_GAP = 10; // icon -> label vertical gap
+const LABEL_GAP = 7; // icon -> label vertical gap
 const ACTION_SIZE = 48; // floating center button (square)
 const ACTION_RADIUS = 15; // center button corner radius
 const ACTION_OVERHANG = 16; // px the button rises above the bar's top edge
@@ -30,10 +30,9 @@ const PLUS = 23; // "+" glyph box inside the button
 // on a layer INSIDE the overflow:hidden bar so it is clipped at the top edge —
 // no glow above the line.
 const ACTION_GLOW = "0 7px 15px rgba(15,118,110,.38), 0 0 18px 4px rgba(45,212,191,.4)";
-// PLAIN is the compact spec (design_handoff_bottom_nav_compact): padBottom
-// folds in the bar's own bottom safe-area padding (5px item + 4px bar) — the
-// OS safe-area inset stacks on top, unchanged, via the wrapper's separate
-// `env(safe-area-inset-bottom)`.
+// PLAIN is the compact spec (design_handoff_bottom_nav_compact). padBottom is
+// the space under the labels on a device with NO bottom safe-area inset; on a
+// device that has one (the iOS home indicator) see bottomPad below.
 //
 // GROUPED is untouched by that pass — no app passes `groups` today — and its
 // extra header-label row no longer fits PLAIN's shrunk budget without going
@@ -41,6 +40,23 @@ const ACTION_GLOW = "0 7px 15px rgba(15,118,110,.38), 0 0 18px 4px rgba(45,212,1
 // Revisit GROUPED's own spacing if/when an app adopts `groups`.
 const PLAIN = { padTop: 4, padBottom: 9, headerGap: 0 };
 const GROUPED = { padTop: 5, padBottom: 6, headerGap: 5 };
+// Bottom safe area. Stacking the whole OS inset (34px on an iPhone) under
+// padBottom left 43px of empty bar below the labels. The tabs now sit INSIDE
+// the inset instead: the space under the labels is the inset less
+// SAFE_AREA_TUCK, never less than padBottom. On an iPhone that is 20px, which
+// keeps the labels 7px clear of the home indicator (it occupies 8-13px from
+// the screen edge). With no inset, the bar is exactly as before.
+const SAFE_AREA_TUCK = 14;
+const INSET_BOTTOM = "env(safe-area-inset-bottom, 0px)";
+const bottomPad = (padBottom) => `max(${padBottom}px, calc(${INSET_BOTTOM} - ${SAFE_AREA_TUCK}px))`;
+// Side inset. Lowered into the safe area, the outer tabs would run into the
+// screen's rounded bottom corners (an edge-to-edge "Overview" starts ~10px in;
+// the corner cuts in ~13px at that height). So the tab row pulls in from each
+// side by up to SIDE_INSET_MAX, scaled off the same bottom inset: 18px on an
+// iPhone in portrait, 0 on a device with square corners / no inset, where the
+// tabs stay edge to edge.
+const SIDE_INSET_MAX = 18;
+const SIDE_INSET = `clamp(0px, calc(${INSET_BOTTOM} - 16px), ${SIDE_INSET_MAX}px)`;
 const cell = {
     display: "flex",
     flexDirection: "column",
@@ -97,7 +113,9 @@ export function BottomNav({ tabs, action, groups }) {
     const centerLabelLift = grouped ? -13 : 0;
     const tabLift = grouped ? -2 : 0;
     // Horizontal center of the action column (== 50% for even counts).
-    const actionLeft = `${((leftCount + 0.5) / columns) * 100}%`;
+    // Measured inside the side inset, so the "+" stays over its label column.
+    const actionFraction = (leftCount + 0.5) / columns;
+    const actionLeft = `calc(${SIDE_INSET} + (100% - 2 * ${SIDE_INSET}) * ${actionFraction})`;
     const gridCols = `repeat(${columns}, 1fr)`;
     // "Tab Colors": the center button + label + glow follow the active tab's color
     // when one is set; otherwise everything stays the default brand teal + mint glow.
@@ -116,8 +134,14 @@ export function BottomNav({ tabs, action, groups }) {
                     borderTop: "1px solid var(--skl-color-border)",
                     position: "relative",
                     overflow: "hidden",
-                    // Keep the tabs clear of the iOS home indicator (additive to padBottom).
-                    paddingBottom: "env(safe-area-inset-bottom, 0px)",
+                    // Space under the labels, tucked into the iOS home-indicator inset
+                    // rather than stacked on top of it (see bottomPad).
+                    paddingBottom: bottomPad(sp.padBottom),
+                    // Keep the outer tabs off the rounded screen corners (see SIDE_INSET).
+                    // Absolutely positioned children (glow) still measure from the full
+                    // width, which is what actionLeft expects.
+                    paddingLeft: SIDE_INSET,
+                    paddingRight: SIDE_INSET,
                 }, children: [_jsx("span", { "aria-hidden": true, style: {
                             position: "absolute",
                             top: -ACTION_OVERHANG,
@@ -132,7 +156,6 @@ export function BottomNav({ tabs, action, groups }) {
                             display: "grid",
                             gridTemplateColumns: gridCols,
                             paddingTop: grouped ? sp.headerGap : sp.padTop,
-                            paddingBottom: sp.padBottom,
                             position: "relative",
                         }, children: [left.map((t, i) => (_jsx(Tab, { ...t, lift: tabLift }, `l${i}`))), _jsxs("div", { onClick: action.onClick, "aria-hidden": true, style: { ...cell, cursor: "pointer" }, children: [_jsx("div", { style: { height: ICON } }), _jsx("span", { style: {
                                             ...labelBase,
