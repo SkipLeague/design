@@ -38,9 +38,9 @@ invent class names.
 ```tsx
 <Card title="Account settings">
   <div style={{ display: "grid", gap: "1rem" }}>
-    <Field label="Display name"><Input defaultValue="Alex S." /></Field>
+    <Field label="Display name"><Input defaultValue="Zeus B." /></Field>
     <Field label="Email" hint="Used for sign-in and match notifications.">
-      <Input defaultValue="alex@example.com" />
+      <Input defaultValue="zeus.bolton@example.com" />
     </Field>
     <Button>Save changes</Button>
   </div>

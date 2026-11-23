@@ -8,7 +8,7 @@ const apps = [
   { slug: "skiptrips", name: "SkipTrips", url: "#" },
   { slug: "skipreading", name: "SkipReading", url: "#" },
 ];
-const user = { displayName: "Alex S.", email: "alex@example.com" };
+const user = { displayName: "Zeus B.", email: "zeus.bolton@example.com" };
 
 const meta: Meta<typeof ProfileMenu> = {
   title: "Chrome/ProfileMenu",

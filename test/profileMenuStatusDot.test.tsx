@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { ProfileMenu } from "../src/ProfileMenu.js";
 import type { AppLink } from "../src/apps.js";
 
-const user = { displayName: "Ben", email: "ben@example.com" };
+const user = { displayName: "Zeus Bolton", email: "zeus.bolton@example.com" };
 
 async function openMenu() {
   await userEvent.click(screen.getByRole("button", { name: "Account" }));
