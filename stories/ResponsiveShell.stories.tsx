@@ -16,7 +16,7 @@ const TopBarMock = () => (
 const MainMock = () => (
   <div style={{ maxWidth: 620, margin: "0 auto", padding: 20, fontFamily: "var(--skl-font-sans)" }}>
     <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: -0.5 }}>Players</h1>
-    {["Dana Cho", "Marco Ruiz", "Tara Singh"].map((n) => (
+    {["Iris Archer", "Pan Piper", "Nike Victory"].map((n) => (
       <div key={n} style={{ display: "flex", gap: 12, padding: "11px 13px", border: "1px solid #e2e8f0", borderRadius: 14, marginBottom: 10, alignItems: "center" }}>
         <span style={{ width: 40, height: 40, borderRadius: 12, background: "var(--skl-color-brand)", color: "#fff", display: "grid", placeItems: "center", fontWeight: 700 }}>
           {n.split(" ").map((p) => p[0]).join("")}
@@ -29,7 +29,7 @@ const MainMock = () => (
 
 const DetailMock = () => (
   <div style={{ padding: 18, fontFamily: "var(--skl-font-sans)" }}>
-    <div style={{ fontWeight: 800, fontSize: 17 }}>Dana Cho</div>
+    <div style={{ fontWeight: 800, fontSize: 17 }}>Iris Archer</div>
     <div style={{ color: "#64748b", fontSize: 12.5, marginBottom: 14 }}>Rank #3 · Singles</div>
     <div style={{ display: "flex", gap: 10 }}>
       <div style={{ flex: 1, background: "#eef2f7", borderRadius: 13, padding: 13, textAlign: "center" }}>

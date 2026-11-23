@@ -3,7 +3,7 @@ import { render, screen, fireEvent, within } from "@testing-library/react";
 
 import { ProfileMenu } from "../src/ProfileMenu";
 
-const user = { displayName: "Ben", email: "ben@example.com" };
+const user = { displayName: "Zeus Bolton", email: "zeus.bolton@example.com" };
 const apps = [{ slug: "skiplists", name: "SkipLists", url: "https://lists.example.com" }];
 
 describe("ProfileMenu", () => {
